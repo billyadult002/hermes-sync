@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FASTONE Capital Operations Platform · 首页</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./assets/style.css?v=20260426brand12" />
+  <link rel="stylesheet" href="./assets/theme.css?v=20260426brand12" />
+  <script src="./assets/theme.js?v=20260426brand12"></script>
+</head>
+<body class="financial-institutional-upgrade" data-theme="dark" data-lang="zh" data-default-page="home">
+  <div class="app app-twin-enhanced">
+    <header class="topbar hermes-header">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"></div>
+          <div class="brand-text">
+            <strong>FASTONE</strong>
+            <span>HERMES AI AGENT</span>
+          </div>
+        </div>
+
+        <div class="nav-center">
+          <div class="page-tabs">
+            <button class="tab-btn active" data-page="home" type="button">首页</button>
+            <button class="tab-btn" data-page="finance" type="button">金融平台</button>
+            <button class="tab-btn" data-page="skills" type="button">Skill 工作平台</button>
+            <button class="tab-btn" data-page="legal" type="button">法律工作平台</button>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <div class="topbar-controls">
+            <div class="compact-switch lang-switch" role="group" aria-label="Language">
+              <button class="switch-pill" type="button" data-lang-switch="zh">CN</button>
+              <button class="switch-pill" type="button" data-lang-switch="en">ENG</button>
+            </div>
+            <div class="compact-switch theme-switch" role="group" aria-label="Theme">
+              <button class="icon-toggle" type="button" data-theme-toggle-mode="light" aria-label="Light theme">☀</button>
+              <button class="icon-toggle" type="button" data-theme-toggle-mode="dark" aria-label="Dark theme">☾</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="executive-dock card">
+      <a class="dock-chip" href="./skill-uk-hk-financial-contract-counsel.html">法律</a>
+      <a class="dock-chip" href="./console.html?platform=financial-analysis">财务分析</a>
+      <a class="dock-chip" href="./console.html?platform=composio-workspace">Composio</a>
+      <a class="dock-chip" href="./console.html?platform=pdf-excel-analysis">PDF to Excel 分析</a>
+      <a class="dock-chip" href="./console.html?platform=due-diligence-web-research">尽职调查</a>
+      <a class="dock-chip" href="./console.html?platform=financial-report-summary">财报摘要</a>
+      <a class="dock-chip" href="./console.html?platform=client-follow-up-weekly-update">客户跟进</a>
+      <a class="dock-chip" href="./console.html?platform=banking-sblc">SBLC</a>
+      <a class="dock-chip" href="./console.html#ai-agent">AI Agent</a>
+      <a class="dock-chip" href="./console.html#governance-center">合规审计</a>
+      <a class="dock-chip" href="./console.html#intel-center">数据中心</a>
+    </div>
+
+    <main class="container main-chat-container">
+
+      <!-- HOME -->
+      <section id="home" class="page active">
+        <section class="hero-clean hero-clean-twin">
+          <div class="hero-panel card strong-border">
+            <div class="hero-content">
+              <div class="eyebrow">FASTONE CAPITAL OPERATIONS PLATFORM</div>
+              <h1>FASTONE<br><span>Capital Operations</span> 工作平台</h1>
+              <p class="hero-subtitle">金融、法律、协同与自动化统一入口</p>
+              <div class="hero-summary-strip">
+                <div class="hero-summary-item">
+                  <span>主通道</span>
+                  <strong data-bind="provider">Gemini Auth</strong>
+                </div>
+                <div class="hero-summary-item">
+                  <span>工作模型</span>
+                  <strong data-bind="model">gemini-3.1-pro</strong>
+                </div>
+                <div class="hero-summary-item">
+                  <span>运行状态</span>
+                  <strong data-bind="runtime">Ready</strong>
+                </div>
+              </div>
+              <div class="signal-box weather-box hero-weather-box" data-weather-box style="margin-top:14px"></div>
+              <div class="hero-actions">
+                <button class="btn btn-primary jump" data-page="finance" type="button">进入金融平台</button>
+                <button class="btn btn-ghost jump" data-page="legal" type="button">进入法律工作平台</button>
+              </div>
+            </div>
+          </div>
+
+          <aside class="home-summary card">
+            <div>
+              <div class="eyebrow">Workspace Status</div>
+              <h2 style="margin:14px 0 0">运行状态</h2>
+              <p class="home-summary-note">右侧面板集中显示当前链路健康、备用可用性与当日自动化执行摘要，便于快速核验运行情况。</p>
+            </div>
+            <div>
+              <div class="summary-grid">
+                <div class="summary-item">
+                  <span>Channel</span>
+                  <strong data-bind="provider">Gemini Auth</strong>
+                </div>
+                <div class="summary-item">
+                  <span>Model</span>
+                  <strong data-bind="model">gemini-3.1-pro</strong>
+                </div>
+                <div class="summary-item">
+                  <span>Fallback</span>
+                  <strong data-bind="fallback">ChatGPT Ready</strong>
+                </div>
+                <div class="summary-item">
+                  <span>Runtime</span>
+                  <strong data-bind="runtime">Ready</strong>
+                </div>
+              </div>
+              <div class="status-stack">
+                <div class="summary-item summary-item-wide">
+                  <span>今日摘要</span>
+                  <strong>人机交流、Cron 中心与 Composio / Google Workspace 均已接入当前工作流。</strong>
+                </div>
+                <div class="summary-item summary-item-wide">
+                  <span>优先动作</span>
+                  <strong>可先从人机交流进入，再按任务切到目标工作平台。</strong>
+                </div>
+                <div class="summary-item summary-item-wide">
+                  <span>AI 路由健康</span>
+                  <strong data-bind="route-health">等待状态数据</strong>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">Human Exchange</div>
+              <h2>人机交流</h2>
+            </div>
+          </div>
+
+          <div class="chat-card card">
+            <div class="compact-status">
+              <div>
+                <span>Channel</span>
+                <strong data-bind="provider">Gemini Auth</strong>
+              </div>
+              <div>
+                <span>Model</span>
+                <strong data-bind="model">gemini-3.1-pro</strong>
+              </div>
+              <div>
+                <span>Mode</span>
+                <strong>General</strong>
+              </div>
+              <div>
+                <span>Status</span>
+                <strong data-bind="runtime">Ready</strong>
+              </div>
+            </div>
+
+            <div id="homeMessages" class="messages">
+              <div class="message">你好，这里是 FASTONE 资本运营平台的人机交流入口。你可以直接输入问题，系统将按当前工作链路继续处理。</div>
+            </div>
+
+            <div class="composer">
+              <div class="tool-row">
+                <button class="tool-btn" type="button">路由设置 ▾</button>
+                <button class="tool-btn" type="button">工作模式 ▾</button>
+                <button class="tool-btn" type="button">快捷模板 ▾</button>
+              </div>
+              <div class="composer-row">
+                <textarea id="homeInput" placeholder="输入你的问题，按 Ctrl / Command + Enter 发送"></textarea>
+                <button id="homeSend" class="btn btn-primary" type="button">发送消息</button>
+              </div>
+              <div class="shortcut">支持 Ctrl + Enter 或 Cmd + Enter 发送。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section cron-section">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">Cron Center</div>
+              <h2>Cron 栏目</h2>
+              <p>固定任务集中在这里查看：每日新闻和重要邮件总结会按时间自动运行，并把结果送到工作流收件箱。</p>
+            </div>
+          </div>
+
+          <div class="cron-grid">
+            <article class="cron-card card">
+              <div class="cron-topline">
+                <span class="cron-dot"></span>
+                <strong>每日新闻</strong>
+              </div>
+              <h3 data-cron-headline="news">09:00 自动生成</h3>
+              <p>全球主流媒体前 10 大新闻，附加科技与突发新闻前 20 条。每条约 150 字中文摘要，去重复并附原始链接。</p>
+              <div class="tag-row cron-live-row">
+                <span class="tag cron-status-pill" data-cron-pill="news">读取中</span>
+                <span class="tag" data-cron-run="news">最近运行：未读取</span>
+              </div>
+              <div class="doc-note" data-cron-note="news">状态读取中...</div>
+              <div class="tag-row">
+                <span class="tag">BBC / Reuters / AP</span>
+                <span class="tag">WSJ / FT</span>
+                <span class="tag">Tech + Breaking</span>
+              </div>
+            </article>
+
+            <article class="cron-card card">
+              <div class="cron-topline">
+                <span class="cron-dot"></span>
+                <strong>SAERC Digest</strong>
+              </div>
+              <h3 data-cron-headline="saerc">11:00 / 17:00 自动推送</h3>
+              <p>按 SAERC 邮箱独立运行，优先筛选 bank、TDSB、BMO、American Express、Andre、Bonnie、银行等相关邮件，突出需要回复、付款、核验和风险事项。</p>
+              <div class="tag-row cron-live-row">
+                <span class="tag cron-status-pill" data-cron-pill="saerc">读取中</span>
+                <span class="tag" data-cron-run="saerc">最近运行：未读取</span>
+              </div>
+              <div class="doc-note" data-cron-note="saerc">状态读取中...</div>
+              <div class="tag-row">
+                <span class="tag">SAERC</span>
+                <span class="tag">Bank Priority</span>
+                <span class="tag">Needs Reply</span>
+              </div>
+              <div class="cron-action-row">
+                <a class="btn btn-ghost" href="./console.html?platform=google-workspace">打开 Google Workspace</a>
+              </div>
+            </article>
+
+            <article class="cron-card card">
+              <div class="cron-topline">
+                <span class="cron-dot"></span>
+                <strong>TIAN Digest</strong>
+              </div>
+              <h3 data-cron-headline="tian">11:00 / 17:00 自动推送</h3>
+              <p>按 TIAN 邮箱独立运行，沿用与 SAERC 相同的优先级规则、Telegram 推送逻辑和风险提醒结构，但状态文件完全分开。</p>
+              <div class="tag-row cron-live-row">
+                <span class="tag cron-status-pill" data-cron-pill="tian">读取中</span>
+                <span class="tag" data-cron-run="tian">最近运行：未读取</span>
+              </div>
+              <div class="doc-note" data-cron-note="tian">状态读取中...</div>
+              <div class="tag-row">
+                <span class="tag">TIAN</span>
+                <span class="tag">Same Rule Set</span>
+                <span class="tag">Isolated State</span>
+              </div>
+              <div class="cron-action-row">
+                <a class="btn btn-ghost" href="./console.html?platform=google-workspace">打开 Google Workspace</a>
+              </div>
+            </article>
+          </div>
+        </section>
+
+      </section>
+
+      <!-- FINANCE -->
+      <section id="finance" class="page">
+        <section class="workspace workspace-twin">
+          <aside class="workspace-side card sidebar-navigation">
+            <div class="side-title">Conversations</div>
+
+            <div class="side-buttons">
+              <button class="btn btn-primary" type="button">新建</button>
+              <button class="btn btn-ghost" type="button">清空</button>
+            </div>
+
+            <div class="thread-list">
+              <div class="thread active">
+                <strong>Facility Agreement 审阅</strong>
+                <span>识别交叉违约、提前到期、担保结构与核心谈判点。</span>
+              </div>
+              <div class="thread">
+                <strong>Credit Memo 摘要</strong>
+                <span>从财务与授信角度输出管理层摘要、关键风险与结论。</span>
+              </div>
+              <div class="thread">
+                <strong>SBLC 风险核查</strong>
+                <span>检查责任边界、索赔条件、银行责任与文件触发机制。</span>
+              </div>
+            </div>
+
+            <div class="upload">
+              <div class="side-title">Files</div>
+              <p>上传财报、授信材料、term sheet、备忘录或尽调摘要，发送时自动并入当前任务上下文。</p>
+              <input id="financeFile" type="file" multiple />
+              <div id="financeFileName" class="file-name">最近附件：尚未上传文件。</div>
+            </div>
+          </aside>
+
+          <section class="workspace-main card">
+            <div class="workspace-head">
+              <div class="workspace-title-row">
+                <div>
+                  <div class="platform-kicker">FINANCE WORKSPACE</div>
+                  <h1 class="platform-title">金融平台</h1>
+                  <p class="platform-desc">
+                    围绕财报、授信、贸易金融、SBLC / DLC、管理层摘要和信用判断建立统一工作台。
+                  </p>
+                </div>
+
+                <div class="mini-status">
+                  <span class="mini-pill" data-bind="provider">ChatGPT (Auth)</span>
+                  <span class="mini-pill" data-bind="model">gpt-5.4-mini</span>
+                  <span class="mini-pill" data-bind="runtime">Ready</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="workspace-body">
+              <div class="workspace-info-row">
+                <div class="status-mini-card">
+                  <span>Mode</span>
+                  <strong>Credit Review</strong>
+                </div>
+                <div class="status-mini-card">
+                  <span>Route</span>
+                  <strong>banking-sblc</strong>
+                </div>
+                <div class="status-mini-card">
+                  <span>Files</span>
+                  <strong id="financeFileStatus">Waiting</strong>
+                </div>
+                <div class="status-mini-card">
+                  <span>Fallback</span>
+                  <strong data-bind="fallback">ChatGPT Ready</strong>
+                </div>
+              </div>
+
+              <div id="financeMessages" class="workspace-messages">
+                <div class="welcome">
+                  <strong>欢迎说明</strong><br>
+                  这里是金融工作中枢，适合处理财报、授信、贸易金融、SBLC / DLC 及管理层摘要任务。
+                </div>
+                <div class="message user">请根据上传的财报和 facility agreement，先输出管理层摘要，再列出交叉违约、提前到期和担保相关风险。</div>
+                <div class="message">已收到任务。建议按“经营表现、财务承诺、违约触发、担保结构、建议动作”五部分整理。</div>
+              </div>
+            </div>
+
+            <div class="composer">
+              <div class="tool-row">
+                <button class="tool-btn" type="button">路由设置 ▾</button>
+                <button class="tool-btn" type="button">工作模式 ▾</button>
+                <button class="tool-btn" type="button">快捷模板 ▾</button>
+              </div>
+
+              <div class="composer-row">
+                <textarea id="financeInput" placeholder="请输入金融分析、授信判断、合同条款风险、保函风险或财务摘要需求。"></textarea>
+                <button id="financeSend" class="btn btn-primary" type="button">发送</button>
+              </div>
+
+              <div class="shortcut">支持 Ctrl + Enter 或 Cmd + Enter 发送。</div>
+            </div>
+          </section>
+        </section>
+      </section>
+
+      <!-- SKILLS -->
+      <section id="skills" class="page">
+        <section class="skills-hero card strong-border">
+          <div class="eyebrow">SKILL WORKSPACE</div>
+          <h1>Skill 工作平台</h1>
+          <p>作为辅助能力目录页保留，承接金融平台与法律工作平台的高频技能入口。</p>
+        </section>
+
+        <section class="skills-layout">
+          <div>
+            <div class="skill-grid">
+              <article class="skill-card card">
+                <h3 data-bind="legal-display-name">法律工作平台</h3>
+                <p>面向 UK/HK 金融合同、授信文件、担保、保函和跨境融资条款审阅。</p>
+                <div class="tag-row">
+                  <span class="tag" data-bind="legal-skill-id">uk_hk_financial_contract_counsel</span>
+                  <span class="tag">Legal</span>
+                </div>
+                <button class="btn btn-primary jump" data-page="legal" type="button">进入平台</button>
+              </article>
+
+              <article class="skill-card card">
+                <h3>财务分析工作平台</h3>
+                <p>适合处理财报摘要、经营质量、现金流、杠杆结构和授信意见输出。</p>
+                <div class="tag-row">
+                  <span class="tag">financial-analysis</span>
+                  <span class="tag">Credit</span>
+                </div>
+                <button class="btn btn-primary jump" data-page="finance" type="button">进入平台</button>
+              </article>
+            </div>
+          </div>
+
+          <aside class="side-card card">
+            <div class="side-title">运行摘要</div>
+            <div class="status-list">
+              <div class="status-row">
+                <span>Platform</span>
+                <strong>Skill 工作平台</strong>
+              </div>
+              <div class="status-row">
+                <span>Channel</span>
+                <strong data-bind="provider">Gemini Auth</strong>
+              </div>
+              <div class="status-row">
+                <span>Count</span>
+                <strong data-bind="skill-count">2 Skills</strong>
+              </div>
+              <div class="status-row">
+                <span>Status</span>
+                <strong data-bind="runtime">Ready</strong>
+              </div>
+            </div>
+          </aside>
+        </section>
+      </section>
+
+      <!-- LEGAL -->
+      <section id="legal" class="page">
+        <section class="workspace workspace-twin">
+          <aside class="workspace-side card sidebar-navigation">
+            <div class="side-title">Conversations</div>
+
+            <div class="side-buttons">
+              <button class="btn btn-primary" type="button">新建</button>
+              <button class="btn btn-ghost" type="button">清空</button>
+            </div>
+
+            <div class="thread-list">
+              <div class="thread active">
+                <strong>Facility Agreement Review</strong>
+                <span>梳理交易结构、事件违约、担保安排与保留事项。</span>
+              </div>
+              <div class="thread">
+                <strong>Guarantee Clause Notes</strong>
+                <span>识别担保范围、责任边界、补足义务和追索路径。</span>
+              </div>
+              <div class="thread">
+                <strong>SBLC Terms Review</strong>
+                <span>核查索赔机制、单据条件、期限安排和责任触发条款。</span>
+              </div>
+            </div>
+
+            <div class="upload">
+              <div class="side-title">Files</div>
+              <p>上传合同、条款底稿或备忘录，发送时自动进入法律审阅上下文。</p>
+              <input id="legalFile" type="file" multiple />
+              <div id="legalFileName" class="file-name">最近附件：尚未上传文件。</div>
+            </div>
+          </aside>
+
+          <section class="workspace-main card">
+            <div class="workspace-head">
+              <div class="workspace-title-row">
+                <div>
+                  <div class="platform-kicker">LEGAL WORKSPACE</div>
+                  <h1 class="platform-title">法律工作平台</h1>
+                  <p class="platform-desc">
+                    聚焦 UK/HK 金融合同、授信文件、担保、保函、SBLC / DLC 和跨境融资条款审阅。
+                  </p>
+                </div>
+
+                <div class="mini-status">
+                  <span class="mini-pill" data-bind="provider">ChatGPT (Auth)</span>
+                  <span class="mini-pill">Legal Review</span>
+                  <span class="mini-pill" data-bind="runtime">Ready</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="workspace-body">
+              <div class="workspace-info-row">
+                <div class="status-mini-card">
+                  <span>Mode</span>
+                  <strong>Legal Counsel</strong>
+                </div>
+                <div class="status-mini-card">
+                  <span>Skill</span>
+                  <strong data-bind="legal-skill-id">uk_hk_financial_contract_counsel</strong>
+                </div>
+                <div class="status-mini-card">
+                  <span>Files</span>
+                  <strong id="legalFileStatus">Waiting</strong>
+                </div>
+                <div class="status-mini-card">
+                  <span>Law</span>
+                  <strong>UK / HK</strong>
+                </div>
+              </div>
+
+              <div id="legalMessages" class="workspace-messages">
+                <div class="welcome">
+                  <strong>欢迎说明</strong><br>
+                  这里是法律工作中枢，适合处理金融合同、担保、保函和跨境融资结构审阅。
+                </div>
+                <div class="message user">请使用 uk_hk_financial_contract_counsel 技能审阅这份合同，输出交易结构、核心条款、主要风险、建议修改和待确认问题。</div>
+                <div class="message">已收到。建议优先识别融资结构、先决条件、陈述保证、财务承诺、事件违约、担保安排和管辖法律。</div>
+              </div>
+            </div>
+
+            <div class="composer">
+              <div class="tool-row">
+                <button class="tool-btn" type="button">路由设置 ▾</button>
+                <button class="tool-btn" type="button">工作模式 ▾</button>
+                <button class="tool-btn" type="button">快捷模板 ▾</button>
+              </div>
+
+              <div class="composer-row">
+                <textarea id="legalInput" placeholder="请输入法律审阅、合同风险、授信条款、保函问题或业务视角分析需求。"></textarea>
+                <button id="legalSend" class="btn btn-primary" type="button">发送</button>
+              </div>
+
+              <div class="shortcut">支持 Ctrl + Enter 或 Cmd + Enter 发送。</div>
+            </div>
+          </section>
+        </section>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="./assets/app.js?v=20260426brand12"></script>
+</body>
+</html>

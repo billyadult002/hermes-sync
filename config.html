@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FASTONE Hermes AI Agent · 配置说明</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./assets/style.css?v=20260426brand12" />
+  <link rel="stylesheet" href="./assets/theme.css?v=20260426brand12" />
+  <script src="./assets/theme.js?v=20260426brand12"></script>
+</head>
+<body class="financial-institutional-upgrade" data-theme="dark" data-lang="zh">
+<div class="app app-twin-enhanced">
+  <header class="topbar hermes-header">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-text">
+          <strong>FASTONE</strong>
+          <span>HERMES AI AGENT</span>
+        </div>
+      </div>
+      <div class="nav-center">
+        <div class="page-tabs">
+          <button class="tab-btn" data-page="home" type="button">首页</button>
+          <button class="tab-btn" data-page="finance" type="button">金融平台</button>
+          <button class="tab-btn" data-page="skills" type="button">Skill 工作平台</button>
+          <button class="tab-btn" data-page="legal" type="button">法律工作平台</button>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="topbar-controls">
+          <div class="compact-switch lang-switch" role="group" aria-label="Language">
+            <button class="switch-pill" type="button" data-lang-switch="zh">CN</button>
+            <button class="switch-pill" type="button" data-lang-switch="en">ENG</button>
+          </div>
+          <div class="compact-switch theme-switch" role="group" aria-label="Theme">
+            <button class="icon-toggle" type="button" data-theme-toggle-mode="light" aria-label="Light theme">☀</button>
+            <button class="icon-toggle" type="button" data-theme-toggle-mode="dark" aria-label="Dark theme">☾</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container doc-shell">
+    <section class="doc-hero card strong-border">
+      <div class="eyebrow">Configuration</div>
+      <h1>配置说明</h1>
+      <p>这里说明工作平台当前采用的路由策略、页面组织方式和技能装载口径，方便你快速核对 Hermes 是否按预期在每一页上工作。</p>
+      <div class="doc-actions">
+        <a class="btn btn-primary" href="status.html">查看运行状态</a>
+        <a class="btn btn-ghost" href="skills-top20.html">查看 Skill 栏目</a>
+      </div>
+    </section>
+
+    <section class="doc-grid">
+      <article class="doc-card card">
+        <h2>当前默认路由</h2>
+        <div class="doc-stat-grid">
+          <div class="doc-item"><span>主通道</span><strong data-bind="provider">Gemini Auth</strong></div>
+          <div class="doc-item"><span>默认模型</span><strong data-bind="model">gemini-3.1-pro</strong></div>
+          <div class="doc-item"><span>备用链路</span><strong data-bind="fallback">ChatGPT Ready</strong></div>
+          <div class="doc-item"><span>系统状态</span><strong data-bind="runtime">Ready</strong></div>
+        </div>
+      </article>
+
+      <aside class="doc-card card">
+        <h2>页面组织</h2>
+        <div class="doc-list">
+          <div class="doc-item"><span>首页</span><strong>普通聊天 + 工作台入口</strong></div>
+          <div class="doc-item"><span>金融平台</span><strong>10 个工作平台共用统一工作骨架</strong></div>
+          <div class="doc-item"><span>Skill 栏目</span><strong>平台列表由 agents/skills.index.json 驱动</strong></div>
+          <div class="doc-item"><span>中英文版</span><strong>共享同一套 assets/style.css 与 assets/app.js</strong></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="doc-grid">
+      <article class="doc-card card">
+        <h2>Hermes 接入点</h2>
+        <div class="doc-kv">
+          <div class="doc-kv-row"><span>/api/status</span><strong>刷新页面状态、通道和备用信息</strong></div>
+          <div class="doc-kv-row"><span>/api/provider</span><strong>路由设置按钮切换通道和模型</strong></div>
+          <div class="doc-kv-row"><span>/api/chat</span><strong>普通聊天、金融平台和法律平台统一发送</strong></div>
+          <div class="doc-kv-row"><span>agents/*.json</span><strong>工作模式、模板和默认路由的元数据来源</strong></div>
+        </div>
+      </article>
+
+      <article class="doc-card card">
+        <h2>工作平台覆盖</h2>
+        <div class="doc-list">
+          <div class="doc-item"><span>法律</span><strong>UK/HK Financial Contract Counsel</strong></div>
+          <div class="doc-item"><span>金融</span><strong>Financial Analysis / DLC / SBLC / Strategy / Document Review</strong></div>
+          <div class="doc-item"><span>协同</span><strong>Google Workspace / Obsidian-Notion</strong></div>
+          <div class="doc-item"><span>语言与创意</span><strong>Humanizer / Image Draft</strong></div>
+        </div>
+      </article>
+    </section>
+  </main>
+</div>
+<script src="./assets/app.js?v=20260426brand12"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FASTONE Hermes AI Agent · 运行状态</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./assets/style.css?v=20260426brand12" />
+  <link rel="stylesheet" href="./assets/theme.css?v=20260426brand12" />
+  <script src="./assets/theme.js?v=20260426brand12"></script>
+</head>
+<body class="financial-institutional-upgrade" data-theme="dark" data-lang="zh">
+<div class="app app-twin-enhanced">
+  <header class="topbar hermes-header">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-text">
+          <strong>FASTONE</strong>
+          <span>HERMES AI AGENT</span>
+        </div>
+      </div>
+      <div class="nav-center">
+        <div class="page-tabs">
+          <button class="tab-btn" data-page="home" type="button">首页</button>
+          <button class="tab-btn" data-page="finance" type="button">金融平台</button>
+          <button class="tab-btn" data-page="skills" type="button">Skill 工作平台</button>
+          <button class="tab-btn" data-page="legal" type="button">法律工作平台</button>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="topbar-controls">
+          <div class="compact-switch lang-switch" role="group" aria-label="Language">
+            <button class="switch-pill" type="button" data-lang-switch="zh">CN</button>
+            <button class="switch-pill" type="button" data-lang-switch="en">ENG</button>
+          </div>
+          <div class="compact-switch theme-switch" role="group" aria-label="Theme">
+            <button class="icon-toggle" type="button" data-theme-toggle-mode="light" aria-label="Light theme">☀</button>
+            <button class="icon-toggle" type="button" data-theme-toggle-mode="dark" aria-label="Dark theme">☾</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container doc-shell">
+    <section class="doc-hero card strong-border">
+      <div class="eyebrow">System Runtime</div>
+      <h1>运行状态</h1>
+      <p>这里集中查看 Hermes 工作平台的当前通道、模型、备用链路和技能工作平台装载情况，确保每个工作面都在同一条稳定链路上运行。</p>
+      <div class="doc-actions">
+        <a class="btn btn-primary" href="/api/status" target="_blank" rel="noopener">查看 API 状态</a>
+        <a class="btn btn-ghost" href="config.html">查看配置说明</a>
+      </div>
+    </section>
+
+    <section class="doc-grid">
+      <article class="doc-card card">
+        <h2>实时工作状态</h2>
+        <div class="doc-stat-grid">
+          <div class="doc-item"><span>当前通道</span><strong data-bind="provider">Gemini Auth</strong></div>
+          <div class="doc-item"><span>当前模型</span><strong data-bind="model">gemini-3.1-pro</strong></div>
+          <div class="doc-item"><span>备用通道</span><strong data-bind="fallback">ChatGPT Ready</strong></div>
+          <div class="doc-item"><span>系统状态</span><strong data-bind="runtime">Ready</strong></div>
+        </div>
+        <div class="doc-note">这一页直接读取 Hermes live 状态接口。Gemini 主通道、ChatGPT 备用通道和本地模型状态会一起反映到这里。</div>
+      </article>
+
+      <aside class="doc-card card">
+        <h2>当前检查点</h2>
+        <div class="doc-list">
+          <div class="doc-item"><span>工作台骨架</span><strong>Direction 4 黑金结构</strong></div>
+          <div class="doc-item"><span>对话回退</span><strong>Gemini → ChatGPT → LM Studio</strong></div>
+          <div class="doc-item"><span>Skill 数量</span><strong data-bind="skill-count">10 Skills</strong></div>
+          <div class="doc-item"><span>运行口径</span><strong>中英文共享同一套 Hermes 接口</strong></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="doc-grid">
+      <article class="doc-card card">
+        <h2>平台一致性</h2>
+        <div class="doc-kv">
+          <div class="doc-kv-row"><span>首页</span><strong>普通聊天 + 工作台入口</strong></div>
+          <div class="doc-kv-row"><span>金融平台</span><strong>工作模式 / 路由 / 模板已接入 Hermes</strong></div>
+          <div class="doc-kv-row"><span>法律平台</span><strong>技能审阅链路与文件上下文一致</strong></div>
+          <div class="doc-kv-row"><span>Skill 栏目</span><strong>10 个常用平台统一归档</strong></div>
+        </div>
+      </article>
+
+      <article class="doc-card card">
+        <h2>下一步观察</h2>
+        <div class="doc-list">
+          <div class="doc-item"><span>主通道</span><strong>观察 Gemini 429 / SSL EOF 是否继续被自动识别</strong></div>
+          <div class="doc-item"><span>备用链路</span><strong>确认 ChatGPT Auth 在高压场景下稳定接管</strong></div>
+          <div class="doc-item"><span>本地模型</span><strong>作为末级兜底保持可选，不干扰主链路</strong></div>
+        </div>
+      </article>
+    </section>
+  </main>
+</div>
+<script src="./assets/app.js?v=20260426brand12"></script>
+</body>
+</html>

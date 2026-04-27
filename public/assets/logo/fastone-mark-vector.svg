@@ -1,0 +1,132 @@
+<svg width="768" height="768" viewBox="0 0 768 768" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="silverMetal" x1="160" y1="90" x2="460" y2="515" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F3F5F7"/>
+      <stop offset="12%" stop-color="#C7CED6"/>
+      <stop offset="28%" stop-color="#7C8794"/>
+      <stop offset="48%" stop-color="#2F3A46"/>
+      <stop offset="70%" stop-color="#111A25"/>
+      <stop offset="100%" stop-color="#5C6673"/>
+    </linearGradient>
+
+    <linearGradient id="gunMetal" x1="300" y1="150" x2="590" y2="580" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#AAB2BD"/>
+      <stop offset="20%" stop-color="#5E6875"/>
+      <stop offset="46%" stop-color="#1F2933"/>
+      <stop offset="72%" stop-color="#0A111A"/>
+      <stop offset="100%" stop-color="#3E4A59"/>
+    </linearGradient>
+    
+    <linearGradient id="champagneGold" x1="160" y1="420" x2="620" y2="700" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFE09A"/>
+      <stop offset="32%" stop-color="#F2C879"/>
+      <stop offset="62%" stop-color="#D6A75A"/>
+      <stop offset="100%" stop-color="#9A6A2F"/>
+    </linearGradient>
+    
+    <linearGradient id="goldDark" x1="400" y1="440" x2="630" y2="670" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F2C879"/>
+      <stop offset="55%" stop-color="#C18B3E"/>
+      <stop offset="100%" stop-color="#76501F"/>
+    </linearGradient>
+    
+    <linearGradient id="whiteHighlight" x1="160" y1="90" x2="430" y2="330" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.82"/>
+      <stop offset="48%" stop-color="#FFFFFF" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    
+    <filter id="logoShadow" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#000000" flood-opacity="0.48"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#logoShadow)" transform="translate(0, -10)">
+    <path
+      d="M166 180L306 98L436 98L436 156L335 156L234 215L234 392L166 431L166 180Z"
+      fill="url(#silverMetal)"
+    />
+
+    <path
+      d="M166 431L234 392L234 457L166 496L166 431Z"
+      fill="url(#champagneGold)"
+    />
+    
+    <path
+      d="M234 215L335 156L335 224L284 254L284 430L234 457L234 215Z"
+      fill="#16202B"
+      opacity="0.65"
+    />
+    
+    <path
+      d="M306 98L436 98L488 128L438 156L335 156L234 215L166 180L306 98Z"
+      fill="url(#silverMetal)"
+    />
+    
+    <path
+      d="M478 136L556 182L556 460L488 500L488 227L428 192L478 136Z"
+      fill="url(#gunMetal)"
+    />
+    
+    <path
+      d="M488 500L556 460L556 525L488 565L488 500Z"
+      fill="url(#goldDark)"
+    />
+    
+    <path
+      d="M295 290L424 215L548 215L548 274L447 274L363 323L363 510L295 549L295 290Z"
+      fill="url(#gunMetal)"
+    />
+    
+    <path
+      d="M424 215L548 215L595 242L548 274L447 274L363 323L295 290L424 215Z"
+      fill="url(#silverMetal)"
+      opacity="0.95"
+    />
+    
+    <path
+      d="M363 354L494 279L494 343L432 379L494 379L494 437L363 437L363 354Z"
+      fill="url(#silverMetal)"
+    />
+    
+    <path
+      d="M397 368L470 326L470 360L424 386L470 386L470 412L397 412L397 368Z"
+      fill="#071426"
+      opacity="0.75"
+    />
+    
+    <path
+      d="M363 510L548 403L548 468L363 575L363 510Z"
+      fill="url(#champagneGold)"
+    />
+    
+    <path
+      d="M548 468L618 428L618 493L548 533L548 468Z"
+      fill="url(#goldDark)"
+    />
+    
+    <path
+      d="M556 182L618 218L618 493L556 525L556 182Z"
+      fill="url(#gunMetal)"
+      opacity="0.96"
+    />
+    
+    <path
+      d="M548 403L618 363L618 428L548 468L548 403Z"
+      fill="url(#champagneGold)"
+      opacity="0.95"
+    />
+    
+    <path
+      d="M174 179L308 101L430 101L430 120L314 120L188 193L174 179Z"
+      fill="url(#whiteHighlight)"
+      opacity="0.72"
+    />
+    
+    <path
+      d="M304 288L426 218L542 218L542 236L431 236L316 302L304 288Z"
+      fill="url(#whiteHighlight)"
+      opacity="0.44"
+    />
+  </g>
+</svg>

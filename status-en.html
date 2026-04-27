@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FASTONE Hermes AI Agent · Runtime Status</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./assets/style.css?v=20260426brand12" />
+  <link rel="stylesheet" href="./assets/theme.css?v=20260426brand12" />
+  <script src="./assets/theme.js?v=20260426brand12"></script>
+</head>
+<body class="financial-institutional-upgrade" data-theme="dark" data-lang="en">
+<div class="app app-twin-enhanced">
+  <header class="topbar hermes-header">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-text">
+          <strong>FASTONE</strong>
+          <span>HERMES AI AGENT</span>
+        </div>
+      </div>
+      <div class="nav-center">
+        <div class="page-tabs">
+          <button class="tab-btn" data-page="home" type="button">Home</button>
+          <button class="tab-btn" data-page="finance" type="button">Finance Workspace</button>
+          <button class="tab-btn" data-page="skills" type="button">Skill Directory</button>
+          <button class="tab-btn" data-page="legal" type="button">Legal Workspace</button>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="topbar-controls">
+          <div class="compact-switch lang-switch" role="group" aria-label="Language">
+            <button class="switch-pill" type="button" data-lang-switch="zh">CN</button>
+            <button class="switch-pill" type="button" data-lang-switch="en">ENG</button>
+          </div>
+          <div class="compact-switch theme-switch" role="group" aria-label="Theme">
+            <button class="icon-toggle" type="button" data-theme-toggle-mode="light" aria-label="Light theme">☀</button>
+            <button class="icon-toggle" type="button" data-theme-toggle-mode="dark" aria-label="Dark theme">☾</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container doc-shell">
+    <section class="doc-hero card strong-border">
+      <div class="eyebrow">System Runtime</div>
+      <h1>Runtime Status</h1>
+      <p>This page keeps the current Hermes route, active model, fallback chain, and skill workspace load in one place so every surface stays on the same live operating picture.</p>
+      <div class="doc-actions">
+        <a class="btn btn-primary" href="/api/status" target="_blank" rel="noopener">Open API Status</a>
+        <a class="btn btn-ghost" href="config-en.html">Open Configuration</a>
+      </div>
+    </section>
+
+    <section class="doc-grid">
+      <article class="doc-card card">
+        <h2>Live Route State</h2>
+        <div class="doc-stat-grid">
+          <div class="doc-item"><span>Active Channel</span><strong data-bind="provider">Gemini Auth</strong></div>
+          <div class="doc-item"><span>Active Model</span><strong data-bind="model">gemini-3.1-pro</strong></div>
+          <div class="doc-item"><span>Fallback</span><strong data-bind="fallback">ChatGPT Ready</strong></div>
+          <div class="doc-item"><span>Runtime</span><strong data-bind="runtime">Ready</strong></div>
+        </div>
+        <div class="doc-note">This panel reads the live Hermes status endpoint directly. Gemini primary routing, ChatGPT fallback, and local-model availability all surface here together.</div>
+      </article>
+
+      <aside class="doc-card card">
+        <h2>Current Checks</h2>
+        <div class="doc-list">
+          <div class="doc-item"><span>Workspace Shell</span><strong>Direction 4 black-gold structure</strong></div>
+          <div class="doc-item"><span>Fallback Path</span><strong>Gemini → ChatGPT → LM Studio</strong></div>
+          <div class="doc-item"><span>Skill Count</span><strong data-bind="skill-count">10 Skills</strong></div>
+          <div class="doc-item"><span>Runtime Scope</span><strong>Chinese and English surfaces share the same Hermes layer</strong></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="doc-grid">
+      <article class="doc-card card">
+        <h2>Page Consistency</h2>
+        <div class="doc-kv">
+          <div class="doc-kv-row"><span>Home</span><strong>General chat plus workspace entry</strong></div>
+          <div class="doc-kv-row"><span>Finance</span><strong>Route, mode, and templates connected to Hermes</strong></div>
+          <div class="doc-kv-row"><span>Legal</span><strong>Skill review path and file context aligned</strong></div>
+          <div class="doc-kv-row"><span>Skill Directory</span><strong>10 common workspaces organized under one shell</strong></div>
+        </div>
+      </article>
+
+      <article class="doc-card card">
+        <h2>What We Watch Next</h2>
+        <div class="doc-list">
+          <div class="doc-item"><span>Primary Route</span><strong>Watch Gemini 429 and SSL EOF cases continue to be caught automatically</strong></div>
+          <div class="doc-item"><span>Backup Route</span><strong>Confirm ChatGPT Auth keeps taking over cleanly under pressure</strong></div>
+          <div class="doc-item"><span>Local Model</span><strong>Remain available as the final fallback without disturbing the main path</strong></div>
+        </div>
+      </article>
+    </section>
+  </main>
+</div>
+<script src="./assets/app.js?v=20260426brand12"></script>
+</body>
+</html>

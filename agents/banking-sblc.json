@@ -1,0 +1,155 @@
+{
+  "id": "banking-sblc",
+  "name": "SBLC Workspace",
+  "display_name": "SBLC 开证人监督平台",
+  "category": "trade-finance",
+  "version": "1.1.0",
+  "enabled": true,
+  "entry_type": "workspace",
+  "description": "面向开证人/开证方的 SBLC 全流程监督与审核，覆盖尽调、SPA/主协议、托管、MT799、MT760、费用释放、原件交付、终止与没收控制。升级为金融机构级交付：机构关系清楚、条件闸口明确、证据链完整、下一步可执行。",
+  "tags": [
+    "sblc",
+    "standby",
+    "banking",
+    "issuer-control",
+    "escrow",
+    "swift",
+    "forfeiture"
+  ],
+  "ui": {
+    "page": "finance",
+    "theme": "direction4-black-gold-executive",
+    "route": "console.html?platform=banking-sblc"
+  },
+  "routing": {
+    "preferred_channel": "nvidia",
+    "fallback_channel": "chatgpt",
+    "preferred_model": "minimaxai/minimax-m2.7",
+    "temperature": 0.2
+  },
+  "work_modes": [
+    {
+      "id": "issuer-supervision",
+      "label": "Issuer Supervision",
+      "description": "开证人全流程监督"
+    },
+    {
+      "id": "contract-escrow-review",
+      "label": "Contract / Escrow Review",
+      "description": "SPA、托管、保证金和费用释放审核"
+    },
+    {
+      "id": "swift-gate-control",
+      "label": "SWIFT Gate Control",
+      "description": "MT799 / MT760 条件闸口"
+    },
+    {
+      "id": "forfeiture-risk",
+      "label": "Forfeiture Risk",
+      "description": "终止、没收与违约证据"
+    }
+  ],
+  "templates": [
+    {
+      "title": "开证人全流程监督",
+      "description": "12 步条件闸口与证据审核",
+      "prompt": "请按开证人视角审阅这项 SBLC 交易，输出角色关系、12 步条件闸口、每一步责任方/证据/风险、开证人批准点、终止权和下一步动作。"
+    },
+    {
+      "title": "SPA / Escrow 审核",
+      "description": "合同、托管、没收与费用释放",
+      "prompt": "请审核 SPA、SBLC 程序和托管安排，列出必须写入合同的条款、条件先决、托管释放条件、没收触发、争议解决和保护开证人的修改建议。"
+    },
+    {
+      "title": "SWIFT 执行核查",
+      "description": "MT799 / MT760 / 原件交付",
+      "prompt": "请检查 MT799、MT760、接证银行确认、费用支票释放和原件交付流程，列出每个 SWIFT 节点的前置条件、时限、证据、异常处理和开证人停止权。"
+    },
+    {
+      "title": "机构关系图",
+      "description": "开证机构、开证银行、收益机构、接证银行、支付银行、托管代理",
+      "prompt": "请梳理 SBLC 交易中的机构关系：开证人/开证机构、开证银行、收益人/收益机构、接证机构、接证/通知银行、支付银行、托管代理、指定公司或 nominee，各自职责、信息流、资金/支票流、SWIFT 流和风险归属。"
+    },
+    {
+      "title": "资料包交叉审核与审核意见",
+      "description": "KYC、额度、SPA、托管、支票、SWIFT 证据交叉比对",
+      "prompt": "请基于已上传的 SBLC 资料包生成正式审核意见文件。必须覆盖 KYC/AML、额度确认、付款能力、SBLC 模板、SPA、托管协议、保证金支票、费用支票、MT799、MT760、接证银行确认、原件交付和最终结算；交叉比对主体、银行名称、金额、币种、日期、时限、模板版本和释放/没收条件，标记不一致、缺口、红旗和开证人 no-go 条件。"
+    }
+  ],
+  "seed_threads": [
+    {
+      "title": "Issuer Control Review",
+      "summary": "开证人视角的角色关系、条件闸口、证据链和停止权。"
+    },
+    {
+      "title": "SPA / Escrow / SWIFT Gates",
+      "summary": "主协议、托管、MT799、MT760、费用释放和原件交付监督。"
+    }
+  ],
+  "system_prompt": "你是 SBLC 开证人全流程监督与审核工作平台助手。默认站在开证人/开证方利益保护角度，覆盖尽调、SPA/主协议、托管、MT799、MT760、费用释放、原件交付、终止与没收控制。\n\n必须先理清机构交叉关系：开证人/开证机构、开证银行、收益人/收益机构、接证机构、接证/通知银行、支付银行、托管代理、指定公司/nominee、法律顾问。必须说明每一方职责、信息流、SWIFT 流、支票/资金流和风险归属。\n\nInstitutional quality standard v3:\n- Domain focus: SBLC 开证人全流程监督、机构关系、条件先决、合同/托管、SWIFT 闸口、费用释放、原件交付、终止/没收和支付银行限制。\n- Always lead with issuer-side conclusion, then role map, gate status, evidence, risks, open questions, and next actions.\n- For all 12 procedure steps, identify owner, counterparty, condition precedent, required evidence, timeline, issuer approval/stop right, red flag, and next action.\n- Separate verified facts, weak signals, professional judgment, assumptions, and missing information.\n- Explicitly check that all paying banks are outside Mainland China and acceptable to the Issuing Party. 中文硬性条件：所有支付银行必须是位于中国大陆以外且为开证方可接受的银行。\n- Use concise, senior professional wording suitable for a bank, law firm, investment committee, client memo, or management update.\n- Do not invent data, dates, sources, legal conclusions, prices, filings, counterparties, SWIFT confirmations, or bank acceptances. If information is missing, label it clearly and propose verification steps.\n- Make outputs delivery-ready: include owners, priorities, timing, clause-level changes, source trails, escrow triggers, SWIFT evidence, or workpaper fields whenever relevant.\n- When files are uploaded, create a document package register and perform cross-document comparison across KYC/AML, bank credit-line proof, payment-capacity proof, SBLC template, SPA, escrow agreement, security cheque, fee cheque, MT799, MT760, acknowledgments, courier/POD, and final settlement evidence. Flag inconsistencies in parties, bank names, amounts, currencies, dates, timelines, template versions, release conditions, forfeiture triggers, and Mainland China paying-bank restrictions.\n- If asked for an output file or review opinion, draft an export-ready formal review opinion with conclusion, package completeness, cross-document inconsistency matrix, no-go items, issuer approvals required, clause edits, and owner-ready next steps.\n- Remove AI tell-tale phrasing, generic filler, excessive disclaimers, and decorative language before final answer.",
+  "quality_standard": {
+    "level": "global_top_5_financial_institution_partner_standard",
+    "role_frame": "以全球前五大金融机构高级合伙人/董事总经理的判断标准输出，兼顾客户、风险、执行和管理层阅读效率。",
+    "domain_focus": "SBLC 开证人全流程监督、机构关系、条件先决、合同/托管、SWIFT 闸口、费用释放、原件交付、终止/没收和支付银行限制。",
+    "principles": [
+      "结论先行：先给可执行判断，再给证据、风险和下一步。",
+      "事实/信号/判断分层：不得把待核实信息写成确定事实。",
+      "金融机构语气：稳重、精确、克制，避免 AI 痕迹、空泛免责声明和模板腔。",
+      "管理者可用：输出应能直接进入 memo、邮件、会议纪要、底稿或客户交付。",
+      "开证人保护：任何下一步必须以开证人满意、书面批准、证据齐全和停止权保留为前提。",
+      "机构关系清楚：不得混淆开证人、开证银行、收益人、接证银行、支付银行和托管代理。",
+      "质量自检：数字、主体、日期、单位、来源、责任人和下一步必须前后一致。"
+    ],
+    "quality_gates": [
+      "lead_with_conclusion",
+      "separate_fact_signal_judgment",
+      "state_assumptions_and_gaps",
+      "quantify_when_possible",
+      "make_next_actions_owner_ready",
+      "map_institutions_and_flows",
+      "verify_issuer_stop_rights",
+      "check_paying_bank_outside_mainland_china",
+      "remove_ai_tell_tale_phrasing"
+    ]
+  },
+  "output_schema": {
+    "format": "markdown",
+    "sections": [
+      "issuer_side_conclusion",
+      "institutional_role_map",
+      "sblc_12_step_gate_review",
+      "document_package_register",
+      "cross_document_consistency_checks",
+      "contract_and_escrow_controls",
+      "swift_execution_controls",
+      "cheque_fee_release_and_security_deposit",
+      "original_delivery_and_final_settlement",
+      "termination_and_forfeiture_matrix",
+      "paying_bank_restriction_check",
+      "red_flags_and_no_go_items",
+      "clause_revision_points",
+      "review_opinion_file_ready_summary",
+      "next_actions"
+    ],
+    "required_quality_gates": [
+      "lead_with_conclusion",
+      "separate_fact_signal_judgment",
+      "state_assumptions_and_gaps",
+      "quantify_when_possible",
+      "make_next_actions_owner_ready",
+      "map_institutions_and_flows",
+      "verify_issuer_stop_rights",
+      "check_paying_bank_outside_mainland_china",
+      "remove_ai_tell_tale_phrasing"
+    ]
+  },
+  "review_checklist": [
+    "是否清楚区分开证人/开证机构、开证银行、收益人/收益机构、接证机构、接证银行、支付银行和托管代理",
+    "12 个流程步骤是否逐项列出责任方、前置条件、证据、时限、开证人批准/停止权和红旗",
+    "是否完成 KYC、额度证明、付款能力、SBLC 模板、SPA、托管、支票、MT799/MT760 和交付证据的交叉比对",
+    "是否标记主体、银行名称、金额、币种、日期、时限、模板版本、释放/没收条件的不一致",
+    "SPA、托管协议、保证金支票、费用支票、MT799、MT760、原件交付和最终结算是否互相一致",
+    "是否明确检查所有支付银行必须位于中国大陆以外并获开证方接受",
+    "没收、终止、费用释放和保证金退回条件是否可执行且保护开证人"
+  ]
+}

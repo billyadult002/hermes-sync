@@ -1,0 +1,37 @@
+{
+  "id": "home--institutional-operating-system-10-upgrades",
+  "type": "hermes_research_memory",
+  "title": "Financial institution operating system upgrade: 10 confirmed directions",
+  "created_at": "2026-04-25T00:00:00+08:00",
+  "language": "zh",
+  "confirmed_scope": [
+    "统一交易主线 Deal / Project Object",
+    "Executive Cockpit 真实化与管理层 Memo",
+    "交易 Gate Engine",
+    "文件差异雷达与正式证据链",
+    "Unified Action Queue 全平台行动队列",
+    "Exception Register 例外管理台账",
+    "AI Agent 受控员工化",
+    "合规审计与审计回放",
+    "知识资产与新人学习路径",
+    "极简金融终端视觉体系"
+  ],
+  "implementation_principles": [
+    "不要继续堆页面；优先把交易对象、风险、证据、Owner、动作和审计串成一条主线。",
+    "所有关键结论必须能回到证据、文件版本、审核意见、AI 输出状态或审计记录。",
+    "所有异常必须进入例外台账，并有 owner、截止时间、证据和关闭原因。",
+    "AI Agent 必须像受控员工一样进入正式流程，输出状态区分草稿、待复核、已采用、已驳回和已归档。",
+    "首页和项目页必须服务管理层 10 秒决策，不回退为功能入口集合。"
+  ],
+  "current_delivery": [
+    "新增 Institutional Operating System Layer，集中展示管理层 Memo、统一行动队列、交易对象、Gate Engine、例外台账和审计回放。",
+    "Hermes、Workbench、Governance Center 已接入该操作系统层。",
+    "AI Agent 保存结果时加入 AI_OUTPUT_STATE 标记，便于后续审计和正式流转。",
+    "文件 Gate Control 保持为交易级入口，与差异雷达、审核意见出口和签字验签流程形成闭环。"
+  ],
+  "acceptance": [
+    "管理层可从 Hermes 或 Workbench 看到同一套交易操作系统视角。",
+    "项目、文件、AI、审计不再是割裂模块，而能通过统一行动队列和证据链理解。",
+    "后续迭代必须沿该交易操作系统主线推进。"
+  ]
+}

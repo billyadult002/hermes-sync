@@ -1,0 +1,22 @@
+{
+  "id": "home--executive-cockpit-navigation-gate-control",
+  "type": "hermes_research_memory",
+  "title": "Executive Cockpit, role-task navigation, File Gate Control upgrade",
+  "created_at": "2026-04-24T00:00:00+08:00",
+  "language": "zh",
+  "principles": [
+    "Hermes 首页不是功能集合页，而是管理层 10 秒决策 Cockpit。",
+    "首页首屏只保留今日待决策、高风险事项、SBLC/DLC 闸口状态、文件待审、AI Agent 健康、新闻市场信号和系统异常。",
+    "次级内容必须下沉到二级工作层、抽屉或详情页，避免首页拥挤。",
+    "主导航按角色任务组织，只保留总控、项目、文件、情报、合规、AI Agent、设置。",
+    "文件中心必须按交易级 Gate Control 设计，覆盖上传、版本锁定、KYC、交叉差异雷达、审阅、审批、签字、验签、审核意见出口和审计留痕。",
+    "浅色模式采用金融纸面质感，只保留页面底色、卡片白、蓝金重点三层视觉，减少灰块、重阴影和重复隔断。",
+    "Hermes 知识系统必须沉淀 Skill、AI Agent、SBLC/DLC 流程、合同模板、尽调模板、新闻情报、历史案例和文件审阅意见，供新人按业务场景学习和项目复用。"
+  ],
+  "acceptance": [
+    "首页进入后第一屏可直接判断管理层当天先处理什么。",
+    "导航不再按页面堆入口，而按工作任务和角色理解组织。",
+    "文件中心 Gate 卡片均有明确动作，不出现只展示但不可操作的卡片。",
+    "AI 输出与公司知识资产进入 Hermes 记忆，后续迭代不得回退到功能堆叠式首页。"
+  ]
+}

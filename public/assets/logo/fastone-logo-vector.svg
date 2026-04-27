@@ -1,0 +1,238 @@
+<svg width="768" height="1024" viewBox="0 0 768 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="bgRadial" cx="50%" cy="18%" r="90%">
+      <stop offset="0%" stop-color="#142C45"/>
+      <stop offset="45%" stop-color="#0B1F36"/>
+      <stop offset="100%" stop-color="#061221"/>
+    </radialGradient>
+
+    <linearGradient id="bgLinear" x1="0" y1="0" x2="768" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#102A45"/>
+      <stop offset="45%" stop-color="#071426"/>
+      <stop offset="100%" stop-color="#050E1A"/>
+    </linearGradient>
+    
+    <!-- Main Silver Metal Gradient -->
+    <linearGradient id="silverMetal" x1="190" y1="120" x2="470" y2="475" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F3F5F7"/>
+      <stop offset="12%" stop-color="#C7CED6"/>
+      <stop offset="28%" stop-color="#7C8794"/>
+      <stop offset="48%" stop-color="#2F3A46"/>
+      <stop offset="70%" stop-color="#111A25"/>
+      <stop offset="100%" stop-color="#5C6673"/>
+    </linearGradient>
+    
+    <!-- Dark Gunmetal Gradient -->
+    <linearGradient id="gunMetal" x1="305" y1="190" x2="575" y2="565" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#AAB2BD"/>
+      <stop offset="20%" stop-color="#5E6875"/>
+      <stop offset="46%" stop-color="#1F2933"/>
+      <stop offset="72%" stop-color="#0A111A"/>
+      <stop offset="100%" stop-color="#3E4A59"/>
+    </linearGradient>
+    
+    <!-- Champagne Gold Gradient -->
+    <linearGradient id="champagneGold" x1="185" y1="440" x2="610" y2="675" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFE09A"/>
+      <stop offset="32%" stop-color="#F2C879"/>
+      <stop offset="62%" stop-color="#D6A75A"/>
+      <stop offset="100%" stop-color="#9A6A2F"/>
+    </linearGradient>
+    
+    <!-- Gold Dark Side -->
+    <linearGradient id="goldDark" x1="400" y1="470" x2="620" y2="670" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F2C879"/>
+      <stop offset="55%" stop-color="#C18B3E"/>
+      <stop offset="100%" stop-color="#76501F"/>
+    </linearGradient>
+    
+    <!-- Top Highlight -->
+    <linearGradient id="whiteHighlight" x1="175" y1="135" x2="430" y2="355" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.82"/>
+      <stop offset="48%" stop-color="#FFFFFF" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    
+    <!-- Inner Highlight -->
+    <linearGradient id="innerHighlight" x1="315" y1="250" x2="530" y2="405" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.58"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    
+    <!-- Shadow -->
+    <filter id="logoShadow" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#000000" flood-opacity="0.48"/>
+    </filter>
+    
+    <filter id="textShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+    
+    <!-- Slight Glow -->
+    <filter id="goldGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feColorMatrix in="blur" type="matrix"
+        values="1 0 0 0 0.84
+                0 1 0 0 0.58
+                0 0 1 0 0.24
+                0 0 0 0.42 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="768" height="1024" fill="url(#bgLinear)"/>
+  <rect width="768" height="1024" fill="url(#bgRadial)" opacity="0.86"/>
+
+  <!-- Subtle side darkening -->
+  <rect x="0" y="0" width="90" height="1024" fill="#020914" opacity="0.25"/>
+  <rect x="678" y="0" width="90" height="1024" fill="#020914" opacity="0.20"/>
+
+  <!-- Logo Mark -->
+  <g filter="url(#logoShadow)" transform="translate(0, 10)">
+    <!-- Left outer vertical body -->
+    <path
+      d="M166 250L306 168L436 168L436 226L335 226L234 285L234 462L166 501L166 250Z"
+      fill="url(#silverMetal)"
+    />
+
+    <!-- Left lower gold cap -->
+    <path
+      d="M166 501L234 462L234 527L166 566L166 501Z"
+      fill="url(#champagneGold)"
+      filter="url(#goldGlow)"
+    />
+    
+    <!-- Left inner dark side -->
+    <path
+      d="M234 285L335 226L335 294L284 324L284 500L234 527L234 285Z"
+      fill="#16202B"
+      opacity="0.65"
+    />
+    
+    <!-- Upper short top face -->
+    <path
+      d="M306 168L436 168L488 198L438 226L335 226L234 285L166 250L306 168Z"
+      fill="url(#silverMetal)"
+    />
+    
+    <!-- Back/right vertical pillar -->
+    <path
+      d="M478 206L556 252L556 530L488 570L488 297L428 262L478 206Z"
+      fill="url(#gunMetal)"
+    />
+    
+    <!-- Right outer gold bottom edge -->
+    <path
+      d="M488 570L556 530L556 595L488 635L488 570Z"
+      fill="url(#goldDark)"
+      filter="url(#goldGlow)"
+    />
+    
+    <!-- Center inner vertical body -->
+    <path
+      d="M295 360L424 285L548 285L548 344L447 344L363 393L363 580L295 619L295 360Z"
+      fill="url(#gunMetal)"
+    />
+    
+    <!-- Center upper bevel -->
+    <path
+      d="M424 285L548 285L595 312L548 344L447 344L363 393L295 360L424 285Z"
+      fill="url(#silverMetal)"
+      opacity="0.95"
+    />
+    
+    <!-- Inner diagonal arm -->
+    <path
+      d="M363 424L494 349L494 413L432 449L494 449L494 507L363 507L363 424Z"
+      fill="url(#silverMetal)"
+    />
+    
+    <!-- Inner dark cavity -->
+    <path
+      d="M397 438L470 396L470 430L424 456L470 456L470 482L397 482L397 438Z"
+      fill="#071426"
+      opacity="0.75"
+    />
+    
+    <!-- Center gold lower face -->
+    <path
+      d="M363 580L548 473L548 538L363 645L363 580Z"
+      fill="url(#champagneGold)"
+      filter="url(#goldGlow)"
+    />
+    
+    <!-- Bottom right outline/gold angular frame -->
+    <path
+      d="M548 538L618 498L618 563L548 603L548 538Z"
+      fill="url(#goldDark)"
+      filter="url(#goldGlow)"
+    />
+    
+    <!-- Right outer frame side -->
+    <path
+      d="M556 252L618 288L618 563L556 595L556 252Z"
+      fill="url(#gunMetal)"
+      opacity="0.96"
+    />
+    
+    <!-- Right side inner gold diagonal -->
+    <path
+      d="M548 473L618 433L618 498L548 538L548 473Z"
+      fill="url(#champagneGold)"
+      opacity="0.95"
+    />
+    
+    <!-- Top silver highlight strip -->
+    <path
+      d="M174 249L308 171L430 171L430 190L314 190L188 263L174 249Z"
+      fill="url(#whiteHighlight)"
+      opacity="0.72"
+    />
+    
+    <!-- Inner silver highlight strip -->
+    <path
+      d="M304 358L426 288L542 288L542 306L431 306L316 372L304 358Z"
+      fill="url(#innerHighlight)"
+      opacity="0.56"
+    />
+    
+    <!-- Right edge subtle highlight -->
+    <path
+      d="M558 254L611 285L611 304L558 274L558 254Z"
+      fill="#FFFFFF"
+      opacity="0.14"
+    />
+  </g>
+
+  <!-- FASTONE Text -->
+  <g filter="url(#textShadow)">
+    <text
+      x="384"
+      y="792"
+      text-anchor="middle"
+      fill="#F8FAFC"
+      font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif"
+      font-size="72"
+      font-weight="300"
+      letter-spacing="17">
+      FASTONE
+    </text>
+
+    <text
+      x="384"
+      y="893"
+      text-anchor="middle"
+      fill="#D7DCE2"
+      font-family="Inter, Avenir Next, Helvetica Neue, Arial, sans-serif"
+      font-size="34"
+      font-weight="300"
+      letter-spacing="20">
+      INTERNATIONAL
+    </text>
+  </g>
+</svg>

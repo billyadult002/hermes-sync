@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN" data-theme-default="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FASTONE Work Platform · DashboardPage</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./assets/theme.css?v=20260426brand12" />
+</head>
+<body class="fastone-theme dashboard-page" data-theme="dark" data-theme-default="dark">
+  <div class="app-shell">
+    <header class="top-nav">
+      <div class="brand-lockup">
+        <div class="brand-lockup__mark">
+          <img src="./public/assets/logo/fastone-logo-dark.png" data-themed-logo="full" alt="FASTONE" />
+        </div>
+        <div class="brand-lockup__text">
+          <strong>FASTONE</strong>
+          <span>DATA COCKPIT</span>
+        </div>
+      </div>
+      <div class="global-search">
+        <input class="input" type="search" placeholder="搜索指标、部门、异常项" />
+      </div>
+      <button class="theme-toggle" type="button" data-theme-toggle>浅色</button>
+      <div class="badge badge-primary">April 2026</div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="sidebar-nav">
+          <a class="sidebar-item" href="./workbench.html">工作台</a>
+          <a class="sidebar-item" href="#">审批中心</a>
+          <a class="sidebar-item" href="#">任务中心</a>
+          <a class="sidebar-item" href="#">项目管理</a>
+          <a class="sidebar-item" href="#">文件中心</a>
+          <a class="sidebar-item is-active" href="./dashboard.html">数据看板</a>
+          <a class="sidebar-item" href="./login.html">登录页</a>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <div class="page-head">
+          <div>
+            <h1>数据看板</h1>
+            <p>管理层月度运营驾驶舱</p>
+          </div>
+          <div class="utility-row">
+            <span class="badge badge-approved">健康</span>
+            <span class="badge badge-warning">2 项异常</span>
+          </div>
+        </div>
+
+        <section class="kpi-grid">
+          <article class="card card-metric card-gold">
+            <div class="metric-card__label">本月审批量</div>
+            <div class="metric-card__value">2,846</div>
+            <div class="kpi-card__trend">+12.4% vs 上月</div>
+          </article>
+          <article class="card card-metric">
+            <div class="metric-card__label">项目完成率</div>
+            <div class="metric-card__value">86%</div>
+            <div class="kpi-card__trend">核心项目稳定推进</div>
+          </article>
+          <article class="card card-metric">
+            <div class="metric-card__label">任务准时率</div>
+            <div class="metric-card__value">92%</div>
+            <div class="kpi-card__trend">逾期数低于阈值</div>
+          </article>
+          <article class="card card-metric">
+            <div class="metric-card__label">文件流转量</div>
+            <div class="metric-card__value">13,290</div>
+            <div class="kpi-card__trend">签字与验签流已接入</div>
+          </article>
+        </section>
+
+        <section class="dashboard-grid">
+          <div class="stack-card">
+            <article class="card card-section chart-shell">
+              <div class="chart-header">
+                <div>
+                  <h3>企业协同效率趋势</h3>
+                  <div class="chart-subtitle">审批、任务、文件和项目的月内协同变化</div>
+                </div>
+                <span class="badge badge-info">Rolling 30D</span>
+              </div>
+              <svg class="trend-svg" viewBox="0 0 720 300" aria-hidden="true">
+                <defs>
+                  <linearGradient id="trendFill" x1="0" x2="1">
+                    <stop offset="0%" stop-color="var(--chart-gold-light)"></stop>
+                    <stop offset="100%" stop-color="var(--chart-blue)"></stop>
+                  </linearGradient>
+                </defs>
+                <g stroke="var(--border-default)" stroke-opacity="0.5">
+                  <line x1="40" y1="240" x2="680" y2="240"></line>
+                  <line x1="40" y1="190" x2="680" y2="190"></line>
+                  <line x1="40" y1="140" x2="680" y2="140"></line>
+                  <line x1="40" y1="90" x2="680" y2="90"></line>
+                </g>
+                <polyline fill="none" stroke="url(#trendFill)" stroke-width="5" points="40,220 120,192 200,170 280,176 360,132 440,146 520,98 600,108 680,72"></polyline>
+                <g fill="var(--chart-gold-light)">
+                  <circle cx="40" cy="220" r="5"></circle>
+                  <circle cx="120" cy="192" r="5"></circle>
+                  <circle cx="200" cy="170" r="5"></circle>
+                  <circle cx="280" cy="176" r="5"></circle>
+                  <circle cx="360" cy="132" r="5"></circle>
+                  <circle cx="440" cy="146" r="5"></circle>
+                  <circle cx="520" cy="98" r="5"></circle>
+                  <circle cx="600" cy="108" r="5"></circle>
+                  <circle cx="680" cy="72" r="5"></circle>
+                </g>
+              </svg>
+              <div class="legend-row">
+                <span><i class="legend-dot" style="background:var(--chart-gold)"></i> 审批效率</span>
+                <span><i class="legend-dot" style="background:var(--chart-blue)"></i> 项目协同</span>
+                <span><i class="legend-dot" style="background:var(--chart-success)"></i> 文件流转</span>
+              </div>
+            </article>
+
+            <article class="card card-section">
+              <div class="chart-header">
+                <div>
+                  <h3>部门效率排行</h3>
+                  <div class="chart-subtitle">本月按完成率与时效综合评分</div>
+                </div>
+              </div>
+              <div class="rank-list">
+                <div class="rank-item"><strong>项目管理办公室</strong><div class="rank-bar"><span style="width:94%"></span></div></div>
+                <div class="rank-item"><strong>法务与合规</strong><div class="rank-bar"><span style="width:89%"></span></div></div>
+                <div class="rank-item"><strong>财务与资金</strong><div class="rank-bar"><span style="width:84%"></span></div></div>
+                <div class="rank-item"><strong>文件治理中心</strong><div class="rank-bar"><span style="width:78%"></span></div></div>
+              </div>
+            </article>
+          </div>
+
+          <div class="stack-card">
+            <article class="card card-section">
+              <div class="chart-header">
+                <div>
+                  <h3>审批类型占比</h3>
+                  <div class="chart-subtitle">近 30 天审批结构</div>
+                </div>
+              </div>
+              <svg class="ring-svg" viewBox="0 0 280 280" aria-hidden="true">
+                <circle cx="140" cy="140" r="82" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="28"></circle>
+                <circle cx="140" cy="140" r="82" fill="none" stroke="var(--chart-gold)" stroke-width="28" stroke-dasharray="206 515" stroke-linecap="round" transform="rotate(-90 140 140)"></circle>
+                <circle cx="140" cy="140" r="82" fill="none" stroke="var(--chart-blue)" stroke-width="28" stroke-dasharray="138 515" stroke-dashoffset="-220" stroke-linecap="round" transform="rotate(-90 140 140)"></circle>
+                <circle cx="140" cy="140" r="82" fill="none" stroke="var(--chart-success)" stroke-width="28" stroke-dasharray="92 515" stroke-dashoffset="-372" stroke-linecap="round" transform="rotate(-90 140 140)"></circle>
+                <circle cx="140" cy="140" r="82" fill="none" stroke="var(--chart-warning)" stroke-width="28" stroke-dasharray="48 515" stroke-dashoffset="-474" stroke-linecap="round" transform="rotate(-90 140 140)"></circle>
+                <text x="140" y="132" text-anchor="middle" fill="var(--text-primary)" font-size="34" font-weight="800">61%</text>
+                <text x="140" y="158" text-anchor="middle" fill="var(--text-secondary)" font-size="13">财务与资金</text>
+              </svg>
+              <div class="legend-row">
+                <span><i class="legend-dot" style="background:var(--chart-gold)"></i> 财务</span>
+                <span><i class="legend-dot" style="background:var(--chart-blue)"></i> 项目</span>
+                <span><i class="legend-dot" style="background:var(--chart-success)"></i> 文件</span>
+                <span><i class="legend-dot" style="background:var(--chart-warning)"></i> 人事</span>
+              </div>
+            </article>
+
+            <article class="card card-section">
+              <div class="chart-header">
+                <div>
+                  <h3>异常提醒</h3>
+                  <div class="chart-subtitle">需要管理层关注的节点</div>
+                </div>
+              </div>
+              <div class="alert-list">
+                <div class="alert-item"><strong>SBLC 审核阻塞</strong><span>接证行模板待最终确认，已接近 5 banking days 阈值。</span><span class="badge badge-warning">中风险</span></div>
+                <div class="alert-item"><strong>导出留痕异常</strong><span>昨天 18:40 有 2 次高敏感文件导出，需复核 need-to-know 授权。</span><span class="badge badge-danger">高风险</span></div>
+                <div class="alert-item"><strong>AI Agent 路由降级</strong><span>AI8 通道昨晚自动切换至备用模式，当前已恢复。</span><span class="badge badge-info">已恢复</span></div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="./assets/theme.js?v=20260426brand12"></script>
+</body>
+</html>

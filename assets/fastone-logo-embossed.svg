@@ -1,0 +1,28 @@
+<svg width="900" height="260" viewBox="0 0 900 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="emboss" x="-12%" y="-24%" width="124%" height="156%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="-1.6" dy="-1.4" stdDeviation="1.2" flood-color="#FFFFFF" flood-opacity=".80"/>
+      <feDropShadow dx="2.2" dy="2.3" stdDeviation="1.7" flood-color="#9CA7B5" flood-opacity=".32"/>
+    </filter>
+    <linearGradient id="embossGray" x1="40" y1="44" x2="804" y2="234" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D4DBE3"/>
+      <stop offset=".54" stop-color="#ADB8C5"/>
+      <stop offset="1" stop-color="#E1E6EC"/>
+    </linearGradient>
+    <linearGradient id="shieldGrayA" x1="46" y1="34" x2="146" y2="194" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#CFD7E0"/>
+      <stop offset=".5" stop-color="#AEB8C5"/>
+      <stop offset="1" stop-color="#92A0B2"/>
+    </linearGradient>
+  </defs>
+  <g filter="url(#emboss)" opacity=".78">
+    <path d="M111 34L167 66L187 90V160L167 186L111 226L55 186L35 160V90L55 66L111 34Z" fill="url(#shieldGrayA)"/>
+    <path d="M35 90L55 66L111 34L84 118L35 118V90Z" fill="#B2BCC9"/>
+    <path d="M187 90V160L167 186L126 212L126 86L187 90Z" fill="#A1ACBB"/>
+    <path d="M59 72H131L120 86H59V72Z" fill="url(#embossGray)"/>
+    <path d="M80 86H131L120 100H80V86Z" fill="#B8C2CF"/>
+    <path d="M59 115H106L92 131H59V115Z" fill="url(#embossGray)"/>
+    <path d="M86 143H131L103 176H75L86 143Z" fill="url(#embossGray)"/>
+    <text x="238" y="162" fill="url(#embossGray)" font-family="'Inter', 'Segoe UI', Arial, sans-serif" font-size="80" font-weight="600" letter-spacing="22">FASTONE</text>
+  </g>
+</svg>

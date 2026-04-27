@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN" data-theme-default="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FASTONE Work Platform · LoginPage</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./assets/theme.css?v=20260426brand12" />
+</head>
+<body class="fastone-theme" data-theme="dark" data-theme-default="dark">
+  <main class="login-page">
+    <section class="login-hero">
+      <div class="login-brand-lockup">
+        <div class="brand-lockup__mark">
+          <img src="./public/assets/logo/fastone-logo-dark.png" data-themed-logo="full" alt="FASTONE" />
+        </div>
+        <div class="brand-lockup__text">
+          <strong>FASTONE</strong>
+          <span>INTERNATIONAL</span>
+        </div>
+      </div>
+      <div>
+        <h1>FASTONE Work Platform</h1>
+        <p>国际化企业数字协同平台</p>
+        <p>高效协同 · 精准流程 · 数据驱动</p>
+      </div>
+      <div class="utility-row">
+        <button class="btn btn-secondary btn-sm" type="button" data-theme-toggle>浅色</button>
+        <span class="badge badge-primary">Protected Session</span>
+        <span class="badge badge-muted">SSO Ready</span>
+      </div>
+    </section>
+
+    <aside class="login-panel">
+      <section class="card card-gold login-card">
+        <div class="page-head" style="margin-bottom:20px">
+          <div>
+            <h2>企业登录</h2>
+            <p>使用公司账号进入 FASTONE 协同工作平台</p>
+          </div>
+        </div>
+        <form class="login-form">
+          <div class="form-row">
+            <label for="login-account">账号</label>
+            <input id="login-account" class="input" type="text" placeholder="name@fastone.com" />
+          </div>
+          <div class="form-row">
+            <label for="login-password">密码</label>
+            <input id="login-password" class="input" type="password" placeholder="请输入登录密码" />
+          </div>
+          <div class="form-row">
+            <label for="login-code">验证码</label>
+            <div class="captcha-row">
+              <input id="login-code" class="input" type="text" placeholder="输入验证码" />
+              <div class="captcha-box">A7K9</div>
+            </div>
+          </div>
+          <div class="login-meta">
+            <span>登录后自动继承主题偏好与审计标识</span>
+            <a href="./workbench.html">打开示例工作台</a>
+          </div>
+          <button class="btn btn-primary btn-lg" type="button">登录平台</button>
+          <div class="login-links">
+            <a href="#">企业微信登录</a>
+            <a href="#">SSO 单点登录</a>
+            <a href="#">忘记密码</a>
+          </div>
+        </form>
+      </section>
+    </aside>
+  </main>
+  <script src="./assets/theme.js?v=20260426brand12"></script>
+</body>
+</html>

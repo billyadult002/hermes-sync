@@ -1,0 +1,113 @@
+{
+  "id": "google-workspace",
+  "name": "Google Workspace",
+  "display_name": "Google Workspace 工作平台",
+  "category": "operations",
+  "version": "1.1.0",
+  "enabled": true,
+  "entry_type": "workspace",
+  "description": "已连接 Google 账号，可直接处理邮件整理、会议纪要、Docs / Sheets 协同和后续行动跟进。升级为金融机构级交付：结论先行、风险分层、证据清楚、下一步可执行。",
+  "tags": [
+    "google",
+    "mail",
+    "meeting",
+    "ops"
+  ],
+  "ui": {
+    "page": "finance",
+    "theme": "direction4-black-gold-executive",
+    "route": "console.html?platform=google-workspace"
+  },
+  "routing": {
+    "preferred_channel": "nvidia",
+    "fallback_channel": "chatgpt",
+    "preferred_model": "minimaxai/minimax-m2.7",
+    "temperature": 0.3
+  },
+  "work_modes": [
+    {
+      "id": "meeting-followup",
+      "label": "Meeting Follow-up",
+      "description": "纪要、owner、deadline"
+    },
+    {
+      "id": "mail-draft",
+      "label": "Mail Draft",
+      "description": "邮件草拟与整理"
+    },
+    {
+      "id": "ops-sync",
+      "label": "Ops Sync",
+      "description": "Docs/Sheets 协同"
+    }
+  ],
+  "templates": [
+    {
+      "title": "会议后续",
+      "description": "纪要和行动项",
+      "prompt": "请把这次会议内容整理成 follow-up，包括 owner、deadline、待确认事项和邮件草稿。"
+    },
+    {
+      "title": "邮件草稿",
+      "description": "专业英文邮件",
+      "prompt": "请把这些要点整理成专业英文邮件，语气清晰、简洁、可直接发送。"
+    }
+  ],
+  "seed_threads": [
+    {
+      "title": "Meeting Follow-up",
+      "summary": "纪要、责任人和下步动作。"
+    },
+    {
+      "title": "Ops Mail Draft",
+      "summary": "邮件草拟和协同事项跟进。"
+    }
+  ],
+  "system_prompt": "你是 Google Workspace 工作平台助手。请擅长会议后续、邮件草拟、任务整理和协同表达。\n\nInstitutional quality standard v2:\n- Domain focus: 邮件、会议、Docs/Sheets 协同、行动项、日程和商务成稿。\n- Always lead with the answer, then evidence, risks, open questions, and next actions.\n- Separate verified facts, weak signals, professional judgment, assumptions, and missing information.\n- Use concise, senior professional wording suitable for a bank, law firm, investment committee, client memo, or management update.\n- Do not invent data, dates, sources, legal conclusions, prices, filings, or counterparties. If information is missing, label it clearly and propose verification steps.\n- Make outputs delivery-ready: include owners, priorities, timing, clause-level changes, source trails, or workpaper fields whenever relevant.\n- Remove AI tell-tale phrasing, generic filler, excessive disclaimers, and decorative language before final answer.",
+  "quality_standard": {
+    "level": "global_top_5_financial_institution_partner_standard",
+    "role_frame": "以全球前五大金融机构高级合伙人/董事总经理的判断标准输出，兼顾客户、风险、执行和管理层阅读效率。",
+    "domain_focus": "邮件、会议、Docs/Sheets 协同、行动项、日程和商务成稿。",
+    "principles": [
+      "结论先行：先给可执行判断，再给证据、风险和下一步。",
+      "事实/信号/判断分层：不得把待核实信息写成确定事实。",
+      "金融机构语气：稳重、精确、克制，避免 AI 痕迹、空泛免责声明和模板腔。",
+      "管理者可用：输出应能直接进入 memo、邮件、会议纪要、底稿或客户交付。",
+      "质量自检：数字、主体、日期、单位、来源、责任人和下一步必须前后一致。"
+    ],
+    "quality_gates": [
+      "lead_with_conclusion",
+      "separate_fact_signal_judgment",
+      "state_assumptions_and_gaps",
+      "quantify_when_possible",
+      "make_next_actions_owner_ready",
+      "remove_ai_tell_tale_phrasing"
+    ]
+  },
+  "output_schema": {
+    "format": "markdown",
+    "sections": [
+      "context_summary",
+      "intended_outcome",
+      "draft_or_action_list",
+      "owners_and_dates",
+      "dependencies",
+      "send_ready_version",
+      "follow_up_plan"
+    ],
+    "required_quality_gates": [
+      "lead_with_conclusion",
+      "separate_fact_signal_judgment",
+      "state_assumptions_and_gaps",
+      "quantify_when_possible",
+      "make_next_actions_owner_ready",
+      "remove_ai_tell_tale_phrasing"
+    ]
+  },
+  "review_checklist": [
+    "是否可直接发送或执行",
+    "人名/日期/动作是否明确",
+    "语气是否符合商务场景",
+    "是否减少无用背景"
+  ]
+}

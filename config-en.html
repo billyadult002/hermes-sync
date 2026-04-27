@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FASTONE Hermes AI Agent · Configuration</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./assets/style.css?v=20260426brand12" />
+  <link rel="stylesheet" href="./assets/theme.css?v=20260426brand12" />
+  <script src="./assets/theme.js?v=20260426brand12"></script>
+</head>
+<body class="financial-institutional-upgrade" data-theme="dark" data-lang="en">
+<div class="app app-twin-enhanced">
+  <header class="topbar hermes-header">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-text">
+          <strong>FASTONE</strong>
+          <span>HERMES AI AGENT</span>
+        </div>
+      </div>
+      <div class="nav-center">
+        <div class="page-tabs">
+          <button class="tab-btn" data-page="home" type="button">Home</button>
+          <button class="tab-btn" data-page="finance" type="button">Finance Workspace</button>
+          <button class="tab-btn" data-page="skills" type="button">Skill Directory</button>
+          <button class="tab-btn" data-page="legal" type="button">Legal Workspace</button>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="topbar-controls">
+          <div class="compact-switch lang-switch" role="group" aria-label="Language">
+            <button class="switch-pill" type="button" data-lang-switch="zh">CN</button>
+            <button class="switch-pill" type="button" data-lang-switch="en">ENG</button>
+          </div>
+          <div class="compact-switch theme-switch" role="group" aria-label="Theme">
+            <button class="icon-toggle" type="button" data-theme-toggle-mode="light" aria-label="Light theme">☀</button>
+            <button class="icon-toggle" type="button" data-theme-toggle-mode="dark" aria-label="Dark theme">☾</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container doc-shell">
+    <section class="doc-hero card strong-border">
+      <div class="eyebrow">Configuration</div>
+      <h1>Configuration</h1>
+      <p>This page explains the current routing strategy, page organization, and skill metadata model so you can confirm Hermes is behaving consistently across every workspace surface.</p>
+      <div class="doc-actions">
+        <a class="btn btn-primary" href="status-en.html">Open Runtime Status</a>
+        <a class="btn btn-ghost" href="skills-top20-en.html">Open Skill Directory</a>
+      </div>
+    </section>
+
+    <section class="doc-grid">
+      <article class="doc-card card">
+        <h2>Current Route Defaults</h2>
+        <div class="doc-stat-grid">
+          <div class="doc-item"><span>Primary Channel</span><strong data-bind="provider">Gemini Auth</strong></div>
+          <div class="doc-item"><span>Default Model</span><strong data-bind="model">gemini-3.1-pro</strong></div>
+          <div class="doc-item"><span>Fallback Chain</span><strong data-bind="fallback">ChatGPT Ready</strong></div>
+          <div class="doc-item"><span>Runtime</span><strong data-bind="runtime">Ready</strong></div>
+        </div>
+      </article>
+
+      <aside class="doc-card card">
+        <h2>Page Organization</h2>
+        <div class="doc-list">
+          <div class="doc-item"><span>Home</span><strong>General chat plus workspace entry</strong></div>
+          <div class="doc-item"><span>Finance</span><strong>10 workspaces share one common operating shell</strong></div>
+          <div class="doc-item"><span>Skill Directory</span><strong>Workspace list is driven by agents/skills.index.json</strong></div>
+          <div class="doc-item"><span>Bilingual Build</span><strong>Chinese and English share the same assets/style.css and assets/app.js</strong></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="doc-grid">
+      <article class="doc-card card">
+        <h2>Hermes Integration Points</h2>
+        <div class="doc-kv">
+          <div class="doc-kv-row"><span>/api/status</span><strong>Refreshes live route, fallback, and runtime state</strong></div>
+          <div class="doc-kv-row"><span>/api/provider</span><strong>Powers the route settings controls for channel and model</strong></div>
+          <div class="doc-kv-row"><span>/api/chat</span><strong>Used by general chat, finance, and legal workspaces alike</strong></div>
+          <div class="doc-kv-row"><span>agents/*.json</span><strong>Defines work modes, templates, and preferred routing metadata</strong></div>
+        </div>
+      </article>
+
+      <article class="doc-card card">
+        <h2>Workspace Coverage</h2>
+        <div class="doc-list">
+          <div class="doc-item"><span>Legal</span><strong>UK/HK Financial Contract Counsel</strong></div>
+          <div class="doc-item"><span>Finance</span><strong>Financial Analysis / DLC / SBLC / Strategy / Document Review</strong></div>
+          <div class="doc-item"><span>Collaboration</span><strong>Google Workspace / Obsidian-Notion</strong></div>
+          <div class="doc-item"><span>Language and Creative</span><strong>Humanizer / Image Draft</strong></div>
+        </div>
+      </article>
+    </section>
+  </main>
+</div>
+<script src="./assets/app.js?v=20260426brand12"></script>
+</body>
+</html>

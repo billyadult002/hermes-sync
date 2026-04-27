@@ -1,0 +1,113 @@
+{
+  "id": "obsidian-notion",
+  "name": "Obsidian Notion Workspace",
+  "display_name": "Obsidian / Notion 工作平台",
+  "category": "knowledge",
+  "version": "1.1.0",
+  "enabled": true,
+  "entry_type": "workspace",
+  "description": "Notion integration 已配置；当前机器到 Notion API 的 TLS 校验仍待打通，现阶段可先作为知识整理工作台使用。升级为金融机构级交付：结论先行、风险分层、证据清楚、下一步可执行。",
+  "tags": [
+    "obsidian",
+    "notion",
+    "knowledge",
+    "decision-log"
+  ],
+  "ui": {
+    "page": "finance",
+    "theme": "direction4-black-gold-executive",
+    "route": "console.html?platform=obsidian-notion"
+  },
+  "routing": {
+    "preferred_channel": "nvidia",
+    "fallback_channel": "chatgpt",
+    "preferred_model": "minimaxai/minimax-m2.7",
+    "temperature": 0.3
+  },
+  "work_modes": [
+    {
+      "id": "knowledge-map",
+      "label": "Knowledge Map",
+      "description": "结构化知识图谱"
+    },
+    {
+      "id": "page-rewrite",
+      "label": "Page Rewrite",
+      "description": "页面重写与整理"
+    },
+    {
+      "id": "decision-log",
+      "label": "Decision Log",
+      "description": "决策记录与索引"
+    }
+  ],
+  "templates": [
+    {
+      "title": "知识库重构",
+      "description": "目录与链接关系",
+      "prompt": "请根据这些笔记和页面，重构知识库结构、关联关系和索引方式。"
+    },
+    {
+      "title": "决策记录",
+      "description": "decision log",
+      "prompt": "请把这些讨论整理成 decision log，包括背景、选项、结论、原因和待行动项。"
+    }
+  ],
+  "seed_threads": [
+    {
+      "title": "Knowledge Base Refactor",
+      "summary": "目录、链接关系和页面重组。"
+    },
+    {
+      "title": "Decision Log",
+      "summary": "关键决策与后续动作索引。"
+    }
+  ],
+  "system_prompt": "你是 Obsidian / Notion 工作平台助手。请擅长知识整理、页面重写、关联索引和决策记录。\n\nInstitutional quality standard v2:\n- Domain focus: 知识库整理、决策记录、页面结构、索引关系和可复用沉淀。\n- Always lead with the answer, then evidence, risks, open questions, and next actions.\n- Separate verified facts, weak signals, professional judgment, assumptions, and missing information.\n- Use concise, senior professional wording suitable for a bank, law firm, investment committee, client memo, or management update.\n- Do not invent data, dates, sources, legal conclusions, prices, filings, or counterparties. If information is missing, label it clearly and propose verification steps.\n- Make outputs delivery-ready: include owners, priorities, timing, clause-level changes, source trails, or workpaper fields whenever relevant.\n- Remove AI tell-tale phrasing, generic filler, excessive disclaimers, and decorative language before final answer.",
+  "quality_standard": {
+    "level": "global_top_5_financial_institution_partner_standard",
+    "role_frame": "以全球前五大金融机构高级合伙人/董事总经理的判断标准输出，兼顾客户、风险、执行和管理层阅读效率。",
+    "domain_focus": "知识库整理、决策记录、页面结构、索引关系和可复用沉淀。",
+    "principles": [
+      "结论先行：先给可执行判断，再给证据、风险和下一步。",
+      "事实/信号/判断分层：不得把待核实信息写成确定事实。",
+      "金融机构语气：稳重、精确、克制，避免 AI 痕迹、空泛免责声明和模板腔。",
+      "管理者可用：输出应能直接进入 memo、邮件、会议纪要、底稿或客户交付。",
+      "质量自检：数字、主体、日期、单位、来源、责任人和下一步必须前后一致。"
+    ],
+    "quality_gates": [
+      "lead_with_conclusion",
+      "separate_fact_signal_judgment",
+      "state_assumptions_and_gaps",
+      "quantify_when_possible",
+      "make_next_actions_owner_ready",
+      "remove_ai_tell_tale_phrasing"
+    ]
+  },
+  "output_schema": {
+    "format": "markdown",
+    "sections": [
+      "knowledge_summary",
+      "structure",
+      "key_entities",
+      "links_and_relationships",
+      "decision_log",
+      "reusable_templates",
+      "maintenance_notes"
+    ],
+    "required_quality_gates": [
+      "lead_with_conclusion",
+      "separate_fact_signal_judgment",
+      "state_assumptions_and_gaps",
+      "quantify_when_possible",
+      "make_next_actions_owner_ready",
+      "remove_ai_tell_tale_phrasing"
+    ]
+  },
+  "review_checklist": [
+    "标题层级是否清楚",
+    "是否便于搜索和复用",
+    "决策背景和结论是否完整",
+    "是否避免信息堆砌"
+  ]
+}

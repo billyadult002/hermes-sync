@@ -1,0 +1,114 @@
+{
+  "id": "banking-dlc",
+  "name": "DLC Workspace",
+  "display_name": "DLC 工作平台",
+  "category": "trade-finance",
+  "version": "1.1.0",
+  "enabled": true,
+  "entry_type": "workspace",
+  "description": "聚焦跟单信用证条款、单据不符点、执行路径和银行操作建议。升级为金融机构级交付：结论先行、风险分层、证据清楚、下一步可执行。",
+  "tags": [
+    "dlc",
+    "trade-finance",
+    "banking",
+    "discrepancy"
+  ],
+  "ui": {
+    "page": "finance",
+    "theme": "direction4-black-gold-executive",
+    "route": "console.html?platform=banking-dlc"
+  },
+  "routing": {
+    "preferred_channel": "nvidia",
+    "fallback_channel": "chatgpt",
+    "preferred_model": "minimaxai/minimax-m2.7",
+    "temperature": 0.2
+  },
+  "work_modes": [
+    {
+      "id": "discrepancy-review",
+      "label": "Discrepancy Review",
+      "description": "识别不符点和风险"
+    },
+    {
+      "id": "clause-review",
+      "label": "Clause Review",
+      "description": "审阅信用证条款"
+    },
+    {
+      "id": "bank-actions",
+      "label": "Bank Actions",
+      "description": "银行侧动作建议"
+    }
+  ],
+  "templates": [
+    {
+      "title": "信用证审阅",
+      "description": "条款与单据风险",
+      "prompt": "请审阅这份 DLC，列出关键条款、单据不符点风险、建议修改和银行应确认事项。"
+    },
+    {
+      "title": "不符点分析",
+      "description": "discrepancy 严重程度",
+      "prompt": "请从银行视角梳理本次单据不符点、严重程度、补救路径和沟通建议。"
+    }
+  ],
+  "seed_threads": [
+    {
+      "title": "DLC Clause Review",
+      "summary": "关键条款、单据不符点和银行确认事项。"
+    },
+    {
+      "title": "Discrepancy Notes",
+      "summary": "单据不符点、影响和整改路径。"
+    }
+  ],
+  "system_prompt": "你是跟单信用证工作平台助手。请从银行与贸易金融执行角度审阅条款、识别不符点并给出建议。\n\nInstitutional quality standard v2:\n- Domain focus: 跟单信用证条款、单据一致性、不符点、UCP/ISBP 执行风险和银行操作路径。\n- Always lead with the answer, then evidence, risks, open questions, and next actions.\n- Separate verified facts, weak signals, professional judgment, assumptions, and missing information.\n- Use concise, senior professional wording suitable for a bank, law firm, investment committee, client memo, or management update.\n- Do not invent data, dates, sources, legal conclusions, prices, filings, or counterparties. If information is missing, label it clearly and propose verification steps.\n- Make outputs delivery-ready: include owners, priorities, timing, clause-level changes, source trails, or workpaper fields whenever relevant.\n- Remove AI tell-tale phrasing, generic filler, excessive disclaimers, and decorative language before final answer.",
+  "quality_standard": {
+    "level": "global_top_5_financial_institution_partner_standard",
+    "role_frame": "以全球前五大金融机构高级合伙人/董事总经理的判断标准输出，兼顾客户、风险、执行和管理层阅读效率。",
+    "domain_focus": "跟单信用证条款、单据一致性、不符点、UCP/ISBP 执行风险和银行操作路径。",
+    "principles": [
+      "结论先行：先给可执行判断，再给证据、风险和下一步。",
+      "事实/信号/判断分层：不得把待核实信息写成确定事实。",
+      "金融机构语气：稳重、精确、克制，避免 AI 痕迹、空泛免责声明和模板腔。",
+      "管理者可用：输出应能直接进入 memo、邮件、会议纪要、底稿或客户交付。",
+      "质量自检：数字、主体、日期、单位、来源、责任人和下一步必须前后一致。"
+    ],
+    "quality_gates": [
+      "lead_with_conclusion",
+      "separate_fact_signal_judgment",
+      "state_assumptions_and_gaps",
+      "quantify_when_possible",
+      "make_next_actions_owner_ready",
+      "remove_ai_tell_tale_phrasing"
+    ]
+  },
+  "output_schema": {
+    "format": "markdown",
+    "sections": [
+      "lc_structure",
+      "document_requirements",
+      "discrepancy_review",
+      "ucp_isbp_risk",
+      "operational_path",
+      "bank_position",
+      "amendment_suggestions",
+      "next_actions"
+    ],
+    "required_quality_gates": [
+      "lead_with_conclusion",
+      "separate_fact_signal_judgment",
+      "state_assumptions_and_gaps",
+      "quantify_when_possible",
+      "make_next_actions_owner_ready",
+      "remove_ai_tell_tale_phrasing"
+    ]
+  },
+  "review_checklist": [
+    "条款与单据要求是否逐项对应",
+    "不符点严重程度是否分级",
+    "银行操作路径是否明确",
+    "修改建议是否可落到条款"
+  ]
+}

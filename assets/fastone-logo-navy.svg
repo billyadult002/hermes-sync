@@ -1,0 +1,12 @@
+<svg width="1280" height="320" viewBox="0 0 1280 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M110 22L176 60L198 88V168L176 196L110 254L44 196L22 168V88L44 60L110 22Z" fill="#021A3D"/>
+  <path d="M110 22L176 60L198 88L126 84L110 22Z" fill="#133768"/>
+  <path d="M198 88V168L176 196L126 232L126 84L198 88Z" fill="#001738"/>
+  <path d="M110 254L44 196L22 168V120L78 120L110 254Z" fill="#03224C"/>
+  <path d="M22 88L44 60L110 22L78 120L22 120V88Z" fill="#0F2F5A"/>
+  <path d="M60 71H144L131 87H60V71Z" fill="#F4F7FB"/>
+  <path d="M85 87H144L131 103H85V87Z" fill="#A4B4CC"/>
+  <path d="M60 118H115L98 136H60V118Z" fill="#F4F7FB"/>
+  <path d="M92 150H144L111 188H78L92 150Z" fill="#F4F7FB"/>
+  <text x="290" y="172" fill="#04172F" font-family="'Avenir Next','Segoe UI',Arial,sans-serif" font-size="96" font-weight="500" letter-spacing="18">FASTONE</text>
+</svg>

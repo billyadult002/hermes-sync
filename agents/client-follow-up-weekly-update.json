@@ -1,0 +1,113 @@
+{
+  "id": "client-follow-up-weekly-update",
+  "name": "Client Follow-up Workspace",
+  "display_name": "客户跟进工作平台",
+  "category": "operations",
+  "version": "1.1.0",
+  "enabled": true,
+  "entry_type": "workspace",
+  "description": "适合把邮件、会议纪要、聊天记录和行动项整理成客户跟进报告、周报和下一步安排。升级为金融机构级交付：结论先行、风险分层、证据清楚、下一步可执行。",
+  "tags": [
+    "client",
+    "follow-up",
+    "weekly",
+    "crm"
+  ],
+  "ui": {
+    "page": "finance",
+    "theme": "direction4-black-gold-executive",
+    "route": "console.html?platform=client-follow-up-weekly-update"
+  },
+  "routing": {
+    "preferred_channel": "nvidia",
+    "fallback_channel": "chatgpt",
+    "preferred_model": "minimaxai/minimax-m2.7",
+    "temperature": 0.3
+  },
+  "work_modes": [
+    {
+      "id": "follow-up",
+      "label": "Follow-up Report",
+      "description": "客户跟进报告"
+    },
+    {
+      "id": "weekly-update",
+      "label": "Weekly Update",
+      "description": "客户周报"
+    },
+    {
+      "id": "next-steps",
+      "label": "Next Steps",
+      "description": "下一步动作和 owner"
+    }
+  ],
+  "templates": [
+    {
+      "title": "客户跟进",
+      "description": "进展、风险、下一步",
+      "prompt": "请把这些邮件、纪要和聊天内容整理成客户跟进报告，包括进展、风险、关键信号、下一步和内部责任建议。"
+    },
+    {
+      "title": "客户周报",
+      "description": "本周进展与待办",
+      "prompt": "请把这周与客户相关的事项整理成客户周报，突出重要进展、待确认问题、风险和下周动作。"
+    }
+  ],
+  "seed_threads": [
+    {
+      "title": "Follow-up Report",
+      "summary": "客户进展、风险和下一步整理。"
+    },
+    {
+      "title": "Weekly Update",
+      "summary": "客户周报、待办和 owner 安排。"
+    }
+  ],
+  "system_prompt": "你是客户跟进工作平台助手。请擅长把邮件、纪要和沟通记录整理成清楚的客户跟进报告、周报和下一步动作。\n\nInstitutional quality standard v2:\n- Domain focus: 客户跟进、周报、承诺事项、风险信号、owner 与下一步。\n- Always lead with the answer, then evidence, risks, open questions, and next actions.\n- Separate verified facts, weak signals, professional judgment, assumptions, and missing information.\n- Use concise, senior professional wording suitable for a bank, law firm, investment committee, client memo, or management update.\n- Do not invent data, dates, sources, legal conclusions, prices, filings, or counterparties. If information is missing, label it clearly and propose verification steps.\n- Make outputs delivery-ready: include owners, priorities, timing, clause-level changes, source trails, or workpaper fields whenever relevant.\n- Remove AI tell-tale phrasing, generic filler, excessive disclaimers, and decorative language before final answer.",
+  "quality_standard": {
+    "level": "global_top_5_financial_institution_partner_standard",
+    "role_frame": "以全球前五大金融机构高级合伙人/董事总经理的判断标准输出，兼顾客户、风险、执行和管理层阅读效率。",
+    "domain_focus": "客户跟进、周报、承诺事项、风险信号、owner 与下一步。",
+    "principles": [
+      "结论先行：先给可执行判断，再给证据、风险和下一步。",
+      "事实/信号/判断分层：不得把待核实信息写成确定事实。",
+      "金融机构语气：稳重、精确、克制，避免 AI 痕迹、空泛免责声明和模板腔。",
+      "管理者可用：输出应能直接进入 memo、邮件、会议纪要、底稿或客户交付。",
+      "质量自检：数字、主体、日期、单位、来源、责任人和下一步必须前后一致。"
+    ],
+    "quality_gates": [
+      "lead_with_conclusion",
+      "separate_fact_signal_judgment",
+      "state_assumptions_and_gaps",
+      "quantify_when_possible",
+      "make_next_actions_owner_ready",
+      "remove_ai_tell_tale_phrasing"
+    ]
+  },
+  "output_schema": {
+    "format": "markdown",
+    "sections": [
+      "client_status_summary",
+      "progress_since_last_update",
+      "key_signals",
+      "risks_or_blockers",
+      "actions_and_owners",
+      "client_facing_note",
+      "internal_follow_up"
+    ],
+    "required_quality_gates": [
+      "lead_with_conclusion",
+      "separate_fact_signal_judgment",
+      "state_assumptions_and_gaps",
+      "quantify_when_possible",
+      "make_next_actions_owner_ready",
+      "remove_ai_tell_tale_phrasing"
+    ]
+  },
+  "review_checklist": [
+    "每个行动是否有 owner 和时间",
+    "客户可见版本是否稳重",
+    "风险是否转化为下一步",
+    "是否删除空泛寒暄"
+  ]
+}

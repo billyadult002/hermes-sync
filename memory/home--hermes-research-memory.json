@@ -1,0 +1,16 @@
+{
+  "summary": "Hermes platform upgrade memory: AI Agent Hub must provide a separate human-to-agent exchange entry, integrate external AI8 through API-first / task-handoff / embed / external-open fallback, keep AI output as draft or pending-review until adopted, and preserve audit, DLP, target workspace, and return-result traceability.",
+  "recent": [
+    {
+      "ts": 1777042500,
+      "request": "AI8 external agent integration and Hermes platform design upgrade",
+      "response": "Build AI Agent Hub as a controlled financial-workflow surface: direct API when AI8_API_URL and AI8_API_KEY are configured, otherwise generate copy-ready task packets for https://ai8.rcouyi.com/chat, allow embedded preview/external open, and save returned output to Hermes memory with pending-review status."
+    },
+    {
+      "ts": 1777042500,
+      "request": "Hermes design and workflow principle",
+      "response": "Keep the platform at institutional finance quality: Executive Cockpit first, role-task navigation, File/SBLC Gate Control, three-layer visual hierarchy, audit/DLP traceability, and human review before adopting external AI output."
+    }
+  ],
+  "updated_at": 1777042500
+}

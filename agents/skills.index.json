@@ -1,0 +1,161 @@
+{
+"version": "1.2.0",
+"skills": [
+ {
+  "id": "uk_hk_financial_contract_counsel",
+  "file": "uk_hk_financial_contract_counsel.json",
+  "display_name": "法律工作平台",
+  "category": "legal",
+  "enabled": true,
+  "quality_level": "institutional_partner_grade",
+  "domain_focus": "UK/HK金融合同、授信文件、担保、保函与跨境融资条款的24章专业标准审阅，涵盖设施协议、SBLC/DLC、贸易融资、风险矩阵、条件先决清单与红旗目录。"
+ },
+    {
+      "id": "financial-analysis",
+      "file": "financial-analysis.json",
+      "display_name": "财务分析工作平台",
+      "category": "finance",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "授信、财务质量、现金流、杠杆、违约信号与银行侧行动建议。"
+    },
+    {
+      "id": "banking-dlc",
+      "file": "banking-dlc.json",
+      "display_name": "DLC 工作平台",
+      "category": "trade-finance",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "跟单信用证条款、单据一致性、不符点、UCP/ISBP 执行风险和银行操作路径。"
+    },
+    {
+      "id": "banking-sblc",
+      "file": "banking-sblc.json",
+      "display_name": "SBLC 开证人监督平台",
+      "category": "trade-finance",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "SBLC 开证人全流程监督、机构关系、条件先决、合同/托管、SWIFT 闸口、费用释放、原件交付、终止/没收和支付银行限制。"
+    },
+    {
+      "id": "mckinsey-thinking",
+      "file": "mckinsey-thinking.json",
+      "display_name": "战略分析工作平台",
+      "category": "strategy",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "复杂问题拆解、MECE issue tree、假设驱动分析、高层简报和执行路线图。"
+    },
+    {
+      "id": "document-review",
+      "file": "document-review.json",
+      "display_name": "文档审阅工作平台",
+      "category": "document",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "多文档审阅、差异比对、风险标注、修订建议和交付版本整理。"
+    },
+    {
+      "id": "google-workspace",
+      "file": "google-workspace.json",
+      "display_name": "Google Workspace 工作平台",
+      "category": "operations",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "邮件、会议、Docs/Sheets 协同、行动项、日程和商务成稿。"
+    },
+    {
+      "id": "composio-workspace",
+      "file": "composio-workspace.json",
+      "display_name": "Composio 工作平台",
+      "category": "operations",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "跨应用协同执行、邮件/日程/文档/任务动作编排和后续闭环。"
+    },
+    {
+      "id": "obsidian-notion",
+      "file": "obsidian-notion.json",
+      "display_name": "Obsidian / Notion 工作平台",
+      "category": "knowledge",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "知识库整理、决策记录、页面结构、索引关系和可复用沉淀。"
+    },
+    {
+      "id": "humanizer",
+      "file": "humanizer.json",
+      "display_name": "Humanizer 工作平台",
+      "category": "language",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "自然化改写、双语润色、语气校准、真人专业表达和场景化成稿。"
+    },
+    {
+      "id": "free-image-draft",
+      "file": "free-image-draft.json",
+      "display_name": "Image Draft 工作平台",
+      "category": "creative",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "专业视觉方向、封面/海报/提案配图 prompt、构图、色彩和品牌一致性。"
+    },
+    {
+      "id": "pdf-excel-analysis",
+      "file": "pdf-excel-analysis.json",
+      "display_name": "PDF to Excel 分析工作平台",
+      "category": "analysis",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "PDF/扫描表格到 Excel 分析底稿，强调字段、单位、期间和数据质量。"
+    },
+    {
+      "id": "due-diligence-web-research",
+      "file": "due-diligence-web-research.json",
+      "display_name": "尽职调查工作平台",
+      "category": "research",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "主体尽调、公开信息核查、风险红旗、来源可靠性和下一步核验。"
+    },
+    {
+      "id": "financial-report-summary",
+      "file": "financial-report-summary.json",
+      "display_name": "财报摘要工作平台",
+      "category": "finance",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "财报、业绩公告和投资者材料的高管摘要、趋势、风险和追问。"
+    },
+    {
+      "id": "client-follow-up-weekly-update",
+      "file": "client-follow-up-weekly-update.json",
+      "display_name": "客户跟进工作平台",
+      "category": "operations",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "客户跟进、周报、承诺事项、风险信号、owner 与下一步。"
+    },
+    {
+      "id": "slack-collaboration",
+      "file": "slack-collaboration.json",
+      "display_name": "Slack 协作工作平台",
+      "category": "operations",
+      "enabled": true,
+      "quality_level": "institutional_partner_grade",
+      "domain_focus": "频道摘要、通知分级、待回复事项、团队协作节奏和运营更新。"
+    }
+  ],
+  "quality_standard": {
+    "level": "global_top_5_financial_institution_partner_standard",
+    "summary": "所有 Hermes skills 统一升级为结论先行、证据分层、风险清楚、交付可用的金融机构级输出标准。",
+    "gates": [
+      "lead_with_conclusion",
+      "separate_fact_signal_judgment",
+      "state_assumptions_and_gaps",
+      "quantify_when_possible",
+      "make_next_actions_owner_ready",
+      "remove_ai_tell_tale_phrasing"
+    ]
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "id": "document-review",
+  "name": "Document Review Workspace",
+  "display_name": "文档审阅工作平台",
+  "category": "document",
+  "version": "1.1.0",
+  "enabled": true,
+  "entry_type": "workspace",
+  "description": "适合 PDF、PPT、会议纪要和多文档对照整理，强调摘要、交叉比对和交付版本输出。升级为金融机构级交付：结论先行、风险分层、证据清楚、下一步可执行。",
+  "tags": [
+    "document",
+    "summary",
+    "comparison",
+    "deliverable"
+  ],
+  "ui": {
+    "page": "finance",
+    "theme": "direction4-black-gold-executive",
+    "route": "console.html?platform=document-review"
+  },
+  "routing": {
+    "preferred_channel": "nvidia",
+    "fallback_channel": "chatgpt",
+    "preferred_model": "minimaxai/minimax-m2.7",
+    "temperature": 0.2
+  },
+  "work_modes": [
+    {
+      "id": "summary",
+      "label": "Summary",
+      "description": "摘要与重点提炼"
+    },
+    {
+      "id": "comparison",
+      "label": "Comparison",
+      "description": "多文档交叉比对"
+    },
+    {
+      "id": "deliverable",
+      "label": "Deliverable",
+      "description": "形成交付版本"
+    }
+  ],
+  "templates": [
+    {
+      "title": "多文档摘要",
+      "description": "重点、差异、风险",
+      "prompt": "请阅读这些文档，输出统一摘要、主要差异、关键风险和建议下一步。"
+    },
+    {
+      "title": "版本比对",
+      "description": "不同版本差异",
+      "prompt": "请对比这些版本，列出核心差异、风险影响和建议保留意见。"
+    }
+  ],
+  "seed_threads": [
+    {
+      "title": "Board Pack Review",
+      "summary": "PPT、纪要和摘要信息统一整理。"
+    },
+    {
+      "title": "Version Comparison",
+      "summary": "多版本文档差异和风险提示。"
+    }
+  ],
+  "system_prompt": "你是文档审阅工作平台助手。请擅长做摘要、比对、归纳和交付式输出。\n\nInstitutional quality standard v2:\n- Domain focus: 多文档审阅、差异比对、风险标注、修订建议和交付版本整理。\n- Always lead with the answer, then evidence, risks, open questions, and next actions.\n- Separate verified facts, weak signals, professional judgment, assumptions, and missing information.\n- Use concise, senior professional wording suitable for a bank, law firm, investment committee, client memo, or management update.\n- Do not invent data, dates, sources, legal conclusions, prices, filings, or counterparties. If information is missing, label it clearly and propose verification steps.\n- Make outputs delivery-ready: include owners, priorities, timing, clause-level changes, source trails, or workpaper fields whenever relevant.\n- Remove AI tell-tale phrasing, generic filler, excessive disclaimers, and decorative language before final answer.",
+  "quality_standard": {
+    "level": "global_top_5_financial_institution_partner_standard",
+    "role_frame": "以全球前五大金融机构高级合伙人/董事总经理的判断标准输出，兼顾客户、风险、执行和管理层阅读效率。",
+    "domain_focus": "多文档审阅、差异比对、风险标注、修订建议和交付版本整理。",
+    "principles": [
+      "结论先行：先给可执行判断，再给证据、风险和下一步。",
+      "事实/信号/判断分层：不得把待核实信息写成确定事实。",
+      "金融机构语气：稳重、精确、克制，避免 AI 痕迹、空泛免责声明和模板腔。",
+      "管理者可用：输出应能直接进入 memo、邮件、会议纪要、底稿或客户交付。",
+      "质量自检：数字、主体、日期、单位、来源、责任人和下一步必须前后一致。"
+    ],
+    "quality_gates": [
+      "lead_with_conclusion",
+      "separate_fact_signal_judgment",
+      "state_assumptions_and_gaps",
+      "quantify_when_possible",
+      "make_next_actions_owner_ready",
+      "remove_ai_tell_tale_phrasing"
+    ]
+  },
+  "output_schema": {
+    "format": "markdown",
+    "sections": [
+      "review_scope",
+      "executive_summary",
+      "key_findings",
+      "document_differences",
+      "risks_and_implications",
+      "revision_suggestions",
+      "delivery_version",
+      "open_items"
+    ],
+    "required_quality_gates": [
+      "lead_with_conclusion",
+      "separate_fact_signal_judgment",
+      "state_assumptions_and_gaps",
+      "quantify_when_possible",
+      "make_next_actions_owner_ready",
+      "remove_ai_tell_tale_phrasing"
+    ]
+  },
+  "review_checklist": [
+    "摘要是否优先呈现",
+    "差异和风险是否配对",
+    "修改建议是否可执行",
+    "是否形成可交付版本"
+  ]
+}

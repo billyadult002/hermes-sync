@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FASTONE Work Platform · WorkbenchPage</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./assets/theme.css?v=20260426brand12" />
+</head>
+<body class="fastone-theme" data-theme="light">
+  <div class="app-shell">
+    <header class="top-nav">
+      <div class="brand-lockup">
+        <div class="brand-lockup__mark">
+          <img src="./public/assets/logo/fastone-logo-light.png" data-themed-logo="full" alt="FASTONE" />
+        </div>
+        <div class="brand-lockup__text">
+          <strong>FASTONE</strong>
+          <span>WORK PLATFORM</span>
+        </div>
+      </div>
+      <div class="global-search">
+        <input class="input" type="search" placeholder="搜索项目、审批、任务、文件" />
+      </div>
+      <button class="theme-toggle" type="button" data-theme-toggle>深色</button>
+      <div class="badge badge-muted">张三 · Managing Director</div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="sidebar-nav">
+          <a class="sidebar-item is-active" href="./workbench.html">工作台</a>
+          <a class="sidebar-item" href="#">审批中心</a>
+          <a class="sidebar-item" href="#">任务中心</a>
+          <a class="sidebar-item" href="#">项目管理</a>
+          <a class="sidebar-item" href="#">文件中心</a>
+          <a class="sidebar-item" href="#">合同管理</a>
+          <a class="sidebar-item" href="#">财务管理</a>
+          <a class="sidebar-item" href="#">人事管理</a>
+          <a class="sidebar-item" href="./dashboard.html">数据看板</a>
+          <a class="sidebar-item" href="#">系统设置</a>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <div class="page-head">
+          <div>
+            <h1>工作台</h1>
+            <p>FASTONE 企业数字化协同工作平台</p>
+          </div>
+          <div class="utility-row">
+            <span class="badge badge-primary">Today Brief</span>
+            <span class="badge badge-approved">系统健康</span>
+          </div>
+        </div>
+
+        <section class="welcome-card card card-gold">
+          <div>
+            <h2 class="welcome-card__title">上午好，张三</h2>
+            <p class="welcome-card__meta">今天有 6 项待办、3 个审批需要处理，交易与项目流转状态正常。</p>
+            <div class="welcome-card__actions">
+              <button class="btn btn-primary" type="button">发起审批</button>
+              <button class="btn btn-secondary" type="button">新建任务</button>
+            </div>
+          </div>
+          <div class="brand-watermark"></div>
+        </section>
+
+        <section class="metric-grid">
+          <article class="card card-metric">
+            <div class="metric-card__label">待我审批</div>
+            <div class="metric-card__value">12</div>
+            <div class="metric-card__hint">较昨日 +2</div>
+          </article>
+          <article class="card card-metric">
+            <div class="metric-card__label">我的任务</div>
+            <div class="metric-card__value">28</div>
+            <div class="metric-card__hint">7 项本周到期</div>
+          </article>
+          <article class="card card-metric">
+            <div class="metric-card__label">进行中项目</div>
+            <div class="metric-card__value">6</div>
+            <div class="metric-card__hint">2 个项目进入关键节点</div>
+          </article>
+          <article class="card card-metric">
+            <div class="metric-card__label">未读通知</div>
+            <div class="metric-card__value">9</div>
+            <div class="metric-card__hint">含 1 条合规提醒</div>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="card card-section chart-placeholder">
+            <div class="panel-head">
+              <div>
+                <h3>本周任务趋势</h3>
+                <p class="chart-subtitle">跨部门任务流转与完成节奏</p>
+              </div>
+              <span class="badge badge-info">Week 17</span>
+            </div>
+            <div class="chart-grid"></div>
+            <svg class="trend-svg trend-line" viewBox="0 0 640 260" aria-hidden="true">
+              <polyline fill="none" stroke="var(--chart-gold)" stroke-width="4" points="18,210 108,172 198,186 288,130 378,144 468,92 558,106 622,54"></polyline>
+              <g fill="var(--chart-gold-light)">
+                <circle cx="18" cy="210" r="5"></circle>
+                <circle cx="108" cy="172" r="5"></circle>
+                <circle cx="198" cy="186" r="5"></circle>
+                <circle cx="288" cy="130" r="5"></circle>
+                <circle cx="378" cy="144" r="5"></circle>
+                <circle cx="468" cy="92" r="5"></circle>
+                <circle cx="558" cy="106" r="5"></circle>
+                <circle cx="622" cy="54" r="5"></circle>
+              </g>
+            </svg>
+          </article>
+
+          <div class="stack-card">
+            <article class="card card-section">
+              <div class="panel-head">
+                <h3>待办事项</h3>
+                <span class="badge badge-pending">6 项</span>
+              </div>
+              <div class="todo-list">
+                <div class="todo-item"><strong>SBLC 开证资料复核</strong><span>14:00 前补齐 KYC 与银行函</span></div>
+                <div class="todo-item"><strong>审批流升级验收</strong><span>检查文件签字与版本锁定记录</span></div>
+                <div class="todo-item"><strong>AI Agent 路由巡检</strong><span>确认在线与离线通道切换日志</span></div>
+              </div>
+            </article>
+            <article class="card card-section">
+              <div class="panel-head">
+                <h3>通知公告</h3>
+                <span class="badge badge-muted">3 条</span>
+              </div>
+              <div class="notice-list">
+                <div class="notice-item"><strong>合规抽查窗口</strong><span>本周三启动审批与导出留痕抽检。</span></div>
+                <div class="notice-item"><strong>文件中心升级</strong><span>新增签字验签和差异雷达视图。</span></div>
+                <div class="notice-item"><strong>Hermes 技能索引</strong><span>新人 Skill 指南已同步在线安装能力。</span></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="card card-section table-card">
+          <div class="table-card__head">
+            <div>
+              <h3>最近审批</h3>
+              <p class="chart-subtitle">最近 24 小时管理层关注事项</p>
+            </div>
+            <button class="btn btn-ghost btn-sm" type="button">导出</button>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>审批编号</th>
+                <th>类型</th>
+                <th>申请人</th>
+                <th>状态</th>
+                <th>时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>APR-2026-041</td>
+                <td>资本调拨</td>
+                <td>王晨</td>
+                <td><span class="badge badge-pending">待审批</span></td>
+                <td>10:25</td>
+                <td><button class="btn btn-secondary btn-sm" type="button">查看</button></td>
+              </tr>
+              <tr>
+                <td>APR-2026-037</td>
+                <td>SBLC Gate</td>
+                <td>李宁</td>
+                <td><span class="badge badge-processing">审批中</span></td>
+                <td>09:40</td>
+                <td><button class="btn btn-secondary btn-sm" type="button">查看</button></td>
+              </tr>
+              <tr>
+                <td>APR-2026-028</td>
+                <td>外部顾问费用</td>
+                <td>周蓉</td>
+                <td><span class="badge badge-approved">已通过</span></td>
+                <td>昨天</td>
+                <td><button class="btn btn-secondary btn-sm" type="button">详情</button></td>
+              </tr>
+              <tr>
+                <td>APR-2026-019</td>
+                <td>资料补件</td>
+                <td>陈毅</td>
+                <td><span class="badge badge-rejected">已驳回</span></td>
+                <td>昨天</td>
+                <td><button class="btn btn-secondary btn-sm" type="button">复核</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="./assets/theme.js?v=20260426brand12"></script>
+</body>
+</html>
