@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CEO Dashboard | FastOne 金融工作台</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/assets/style.css?v=20260501loading33" />
+  <link rel="stylesheet" href="/assets/theme.css?v=20260501loading33" />
+  <script src="/assets/theme.js?v=20260501loading33"></script>
+  <style>
+    /* CEO Page Specific Isolation */
+    body.ceo-dashboard-page {
+      --ceo-gold: #d6a75a;
+      --ceo-blue: #4f8fcf;
+      --ceo-green: #2fbf8f;
+      --ceo-red: #e05252;
+      --ceo-border: rgba(255, 255, 255, 0.1);
+      --ceo-card-bg: rgba(255, 255, 255, 0.05);
+    }
+
+    .ceo-dashboard-page .ceo-container {
+      padding: 0;
+    }
+
+    .ceo-dashboard-page .ceo-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+    }
+
+    .ceo-dashboard-page .ceo-card {
+      background: var(--ceo-card-bg);
+      border: 1px solid var(--ceo-border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ceo-dashboard-page .ceo-card-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--muted, #8b949e);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .ceo-dashboard-page .ceo-summary {
+      grid-column: span 12;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, rgba(214, 167, 90, 0.1), transparent);
+      border-left: 4px solid var(--ceo-gold);
+    }
+
+    .ceo-dashboard-page .ceo-status-text {
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: #fff;
+    }
+
+    .ceo-dashboard-page .ceo-risk-badge {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .ceo-dashboard-page .ceo-risk-green { background: rgba(47, 191, 143, 0.2); color: var(--ceo-green); border: 1px solid var(--ceo-green); }
+    .ceo-dashboard-page .ceo-risk-amber { background: rgba(214, 167, 90, 0.2); color: var(--ceo-gold); border: 1px solid var(--ceo-gold); }
+    .ceo-dashboard-page .ceo-risk-red { background: rgba(224, 82, 82, 0.2); color: var(--ceo-red); border: 1px solid var(--ceo-red); }
+
+    .ceo-dashboard-page table.ceo-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .ceo-dashboard-page table.ceo-table th {
+      text-align: left;
+      padding: 10px 0;
+      color: var(--muted, #8b949e);
+      border-bottom: 1px solid var(--ceo-border);
+    }
+
+    .ceo-dashboard-page table.ceo-table td {
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .ceo-dashboard-page .ceo-amount { font-family: monospace; font-weight: 600; color: #fff; }
+    .ceo-dashboard-page .ceo-tag { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; margin-left: 6px; }
+
+    .ceo-dashboard-page .col-8 { grid-column: span 8; }
+    .ceo-dashboard-page .col-4 { grid-column: span 4; }
+    .ceo-dashboard-page .col-6 { grid-column: span 6; }
+
+    .ceo-dashboard-page .ceo-action-list { list-style: none; padding: 0; margin: 0; }
+    .ceo-dashboard-page .ceo-action-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--ceo-border);
+    }
+    .ceo-dashboard-page .ceo-action-num {
+      width: 24px;
+      height: 24px;
+      background: var(--ceo-gold);
+      color: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .ceo-dashboard-page .ceo-audit-note {
+      grid-column: span 12;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.8rem;
+      color: #484f58;
+      border-top: 1px solid var(--ceo-border);
+      margin-top: 40px;
+    }
+
+    /* Sidebar and Navigation Unified Styles */
+    .ceo-dashboard-page .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--text-secondary, #8b949e);
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .ceo-dashboard-page .nav-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+    .ceo-dashboard-page .nav-item.active {
+      background: rgba(214, 167, 90, 0.15);
+      color: var(--ceo-gold);
+      font-weight: 600;
+    }
+    .ceo-dashboard-page .nav-icon {
+      font-size: 18px;
+      width: 20px;
+      text-align: center;
+    }
+
+    @media (max-width: 1024px) {
+      .ceo-dashboard-page .col-8, .ceo-dashboard-page .col-4, .ceo-dashboard-page .col-6 { grid-column: span 12; }
+      .ceo-dashboard-page .workspace-twin { flex-direction: column; }
+      .ceo-dashboard-page .sidebar-navigation { width: 100% !important; height: auto !important; }
+    }
+  
+  /* CEO page visibility guard - prevents global workspace/container CSS from hiding CEO cockpit */
+  body.ceo-dashboard-page,
+  body.ceo-dashboard-page.financial-institutional-upgrade {
+    min-height: 100vh !important;
+    height: auto !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    background: #050b14 !important;
+    color: #e6edf3 !important;
+  }
+
+  body.ceo-dashboard-page .app,
+  body.ceo-dashboard-page .app.app-twin-enhanced {
+    display: block !important;
+    min-height: 100vh !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  body.ceo-dashboard-page .topbar,
+  body.ceo-dashboard-page .hermes-header {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 20 !important;
+  }
+
+  body.ceo-dashboard-page .topbar-inner {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  body.ceo-dashboard-page .container.main-chat-container,
+  body.ceo-dashboard-page main.container.main-chat-container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 1 !important;
+    height: auto !important;
+    min-height: calc(100vh - 90px) !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 20px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 1480px !important;
+    box-sizing: border-box !important;
+  }
+
+  body.ceo-dashboard-page .workspace.workspace-twin,
+  body.ceo-dashboard-page section.workspace.workspace-twin {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex-direction: row !important;
+    gap: 20px !important;
+    height: auto !important;
+    min-height: calc(100vh - 120px) !important;
+    max-height: none !important;
+    overflow: visible !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  body.ceo-dashboard-page .workspace-side,
+  body.ceo-dashboard-page .workspace-side.card,
+  body.ceo-dashboard-page aside.workspace-side {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex-direction: column !important;
+    width: 260px !important;
+    min-width: 260px !important;
+    max-width: 260px !important;
+    height: auto !important;
+    min-height: 600px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    position: relative !important;
+    z-index: 2 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.ceo-dashboard-page .workspace-main,
+  body.ceo-dashboard-page .workspace-main.card,
+  body.ceo-dashboard-page section.workspace-main {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex: 1 1 auto !important;
+    height: auto !important;
+    min-height: 600px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    position: relative !important;
+    z-index: 1 !important;
+    box-sizing: border-box !important;
+  }
+
+  body.ceo-dashboard-page .ceo-container,
+  body.ceo-dashboard-page .ceo-grid,
+  body.ceo-dashboard-page .ceo-card,
+  body.ceo-dashboard-page .ceo-summary {
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    max-height: none !important;
+    position: relative !important;
+  }
+
+  body.ceo-dashboard-page .ceo-container {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  body.ceo-dashboard-page .ceo-grid {
+    display: grid !important;
+  }
+
+  body.ceo-dashboard-page .ceo-card {
+    display: block !important;
+  }
+
+  body.ceo-dashboard-page .ceo-nav-links,
+  body.ceo-dashboard-page .nav-item {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  body.ceo-dashboard-page .nav-item {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  @media (max-width: 1024px) {
+    body.ceo-dashboard-page .workspace.workspace-twin {
+      flex-direction: column !important;
+    }
+
+    body.ceo-dashboard-page .workspace-side,
+    body.ceo-dashboard-page aside.workspace-side {
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: none !important;
+    }
+  }
+
+</style>
+</head>
+<body class="financial-institutional-upgrade ceo-dashboard-page" data-theme="dark" data-lang="zh">
+  <div class="app app-twin-enhanced">
+    <header class="topbar hermes-header">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark brand-mark--full" aria-hidden="true">
+            <img src="/public/assets/logo/fastone-logo-current.png?v=20260505truebrand" class="fastone-brand-logo" alt="">
+          </div>
+          <div class="brand-text">
+            <strong>FASTONE</strong>
+            <span>HERMES AI AGENT</span>
+          </div>
+        </div>
+
+        <div class="nav-center">
+          <div class="page-title" style="font-weight: 600; color: #fff; font-size: 16px;">
+            CEO 经营驾驶舱 / Executive Cockpit
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <div class="topbar-controls">
+            <div class="compact-switch lang-switch" role="group" aria-label="Language">
+              <button class="switch-pill" type="button" data-lang-switch="zh">CN</button>
+              <button class="switch-pill" type="button" data-lang-switch="en">ENG</button>
+            </div>
+            <div class="compact-switch theme-switch" role="group" aria-label="Theme">
+              <button class="icon-toggle" type="button" data-theme-toggle-mode="light" aria-label="Light theme">☀</button>
+              <button class="icon-toggle" type="button" data-theme-toggle-mode="dark" aria-label="Dark theme">☾</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container main-chat-container" style="padding-top: 20px;">
+      <section class="workspace workspace-twin" style="display: flex; gap: 20px; min-height: calc(100vh - 100px);">
+        <aside class="workspace-side card sidebar-navigation" style="width: 260px; flex-shrink: 0; height: auto; align-self: stretch;">
+          <div class="side-title">系统导航 / Navigation</div>
+          <nav class="ceo-nav-links" style="margin-top: 15px; display: flex; flex-direction: column; gap: 4px;">
+            <a href="./ceo-dashboard.html" class="nav-item active">
+              <span class="nav-icon">💎</span>
+              <span>CEO 经营驾驶舱</span>
+            </a>
+            <a href="./console.html" class="nav-item">
+              <span class="nav-icon">🖥️</span>
+              <span>控制台 / Console</span>
+            </a>
+            <a href="./dashboard.html" class="nav-item">
+              <span class="nav-icon">📊</span>
+              <span>数据看板 / Dashboard</span>
+            </a>
+            <a href="./console.html?platform=financial-analysis" class="nav-item">
+              <span class="nav-icon">📈</span>
+              <span>分析面板 / Analysis</span>
+            </a>
+            <a href="./console.html#file-center" class="nav-item">
+              <span class="nav-icon">📁</span>
+              <span>文件中心 / Documents</span>
+            </a>
+            <a href="/" class="nav-item">
+              <span class="nav-icon">👤</span>
+              <span>登录 / Login</span>
+            </a>
+            <div style="margin: 10px 0; border-top: 1px solid var(--ceo-border);"></div>
+            <a href="./index.html" class="nav-item">
+              <span class="nav-icon">🏠</span>
+              <span>返回首页 / Home</span>
+            </a>
+          </nav>
+
+          <div style="margin-top: auto; padding-top: 20px;">
+            <div class="card-soft" style="padding: 12px; border-radius: 12px; font-size: 12px; color: var(--muted);">
+              <strong>System Status</strong><br>
+              <span style="color: var(--ceo-green);">●</span> Institutional Secure
+            </div>
+          </div>
+        </aside>
+
+        <section class="workspace-main card" style="flex: 1; padding: 24px; overflow-y: auto;">
+          <div class="ceo-container">
+            <div class="ceo-grid">
+              <!-- 2. Executive Summary -->
+              <div class="ceo-card ceo-summary">
+                <div class="ceo-status-text">今日经营判断：<span style="color:var(--ceo-green)">稳健运行</span>，流动性充足，主要贸易金融资产状态正常。</div>
+                <div class="ceo-risk-badge ceo-risk-green">风险等级：稳定 (GREEN)</div>
+              </div>
+
+              <!-- 3. 今日需决策 -->
+              <div class="ceo-card col-8">
+                <div class="ceo-card-title">今日需决策事项 (5)</div>
+                <table class="ceo-table">
+                  <thead>
+                    <tr>
+                      <th>决策事项</th>
+                      <th>金额/影响</th>
+                      <th>截止时间</th>
+                      <th>风险</th>
+                      <th>建议</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>HSBC SBLC 额度释放申请</td>
+                      <td class="ceo-amount">$12.5M</td>
+                      <td>14:00 (T+0)</td>
+                      <td><span class="ceo-tag ceo-risk-amber">中</span></td>
+                      <td>批准以支持贸易周转</td>
+                    </tr>
+                    <tr>
+                      <td>Q2 流动性拨备调整方案</td>
+                      <td class="ceo-amount">Medium</td>
+                      <td>17:30</td>
+                      <td><span class="ceo-tag ceo-risk-green">低</span></td>
+                      <td>建议按计划增加 5%</td>
+                    </tr>
+                    <tr>
+                      <td>供应商 A 信用敞口临时上调</td>
+                      <td class="ceo-amount">$2.0M</td>
+                      <td>EOD</td>
+                      <td><span class="ceo-tag ceo-risk-red">高</span></td>
+                      <td>需追加抵押品审计</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- 5. 现金流 / 流动性 -->
+              <div class="ceo-card col-4">
+                <div class="ceo-card-title">现金流 / 流动性观察</div>
+                <div style="margin-top:10px">
+                  <div style="display:flex; justify-content:space-between; margin-bottom:8px">
+                    <span>Cash Runway</span>
+                    <span style="color:#fff">24.5 Months</span>
+                  </div>
+                  <div style="background:rgba(255,255,255,0.1); height:6px; border-radius:3px">
+                    <div style="background:var(--ceo-green); width:82%; height:100%; border-radius:3px"></div>
+                  </div>
+                </div>
+                <div style="margin-top:20px; font-size:0.9rem">
+                  <p>• Available Liquidity: <span class="ceo-amount">$42.18M</span></p>
+                  <p>• Large Payment Due (T+3): <span class="ceo-amount">$8.5M</span></p>
+                  <p>• Receivables Watch: <span style="color:var(--ceo-amber)">$1.2M Overdue</span></p>
+                </div>
+              </div>
+
+              <!-- 4. 高风险事项 -->
+              <div class="ceo-card col-6">
+                <div class="ceo-card-title">高风险事项预警</div>
+                <div class="ceo-action-item">
+                  <div style="color:var(--ceo-red)">⚠️</div>
+                  <div>
+                    <div style="font-weight:600">逾期审批阻塞 (48h+)</div>
+                    <div style="font-size:0.85rem; color:#8b949e">法务部 3 项合同待签，涉及标的 $5M。</div>
+                  </div>
+                </div>
+                <div class="ceo-action-item">
+                  <div style="color:var(--ceo-gold)">🔔</div>
+                  <div>
+                    <div style="font-weight:600">客户信用信号恶化 (Client-X)</div>
+                    <div style="font-size:0.85rem; color:#8b949e">AI 监测到外部诉讼风险，建议暂停授信。</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 6. SBLC / DLC / 贸易金融 -->
+              <div class="ceo-card col-6">
+                <div class="ceo-card-title">SBLC / DLC 贸易金融状态</div>
+                <table class="ceo-table">
+                  <tr>
+                    <td>SBLC Issued / Pending</td>
+                    <td class="ceo-amount">12 / 2</td>
+                  </tr>
+                  <tr>
+                    <td>Doc Discrepancies</td>
+                    <td class="ceo-amount" style="color:var(--ceo-red)">3 Cases</td>
+                  </tr>
+                  <tr>
+                    <td>Counterparty Risk</td>
+                    <td style="color:var(--ceo-green)">Healthy</td>
+                  </tr>
+                </table>
+                <p style="font-size:0.75rem; color:var(--ceo-red); margin-top:10px">特别提醒：单据缺口和银行确认状态需要人工复核。</p>
+              </div>
+
+              <!-- 7. 项目与审批阻塞 -->
+              <div class="ceo-card col-4">
+                <div class="ceo-card-title">项目与审批阻塞</div>
+                <div style="text-align:center; padding: 10px 0">
+                  <div style="font-size:2rem; font-weight:700">7</div>
+                  <div style="font-size:0.8rem; color:#8b949e">待审批总数</div>
+                </div>
+                <div style="font-size:0.85rem">
+                  <div style="display:flex; justify-content:space-between; padding:5px 0">
+                    <span>超时审批 (72h)</span>
+                    <span style="color:var(--ceo-red)">2</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; padding:5px 0">
+                    <span>法务阻塞点</span>
+                    <span>Michael W.</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 8. AI / 系统健康 -->
+              <div class="ceo-card col-4">
+                <div class="ceo-card-title">AI / 系统健康</div>
+                <div style="display:flex; gap:10px; margin-bottom:15px">
+                  <div style="flex:1; background:rgba(47, 191, 143, 0.1); padding:10px; border-radius:8px; border:1px solid var(--ceo-green)">
+                    <div style="font-size:0.7rem">AI Route</div>
+                    <div style="font-weight:700">100%</div>
+                  </div>
+                  <div style="flex:1; background:rgba(47, 191, 143, 0.1); padding:10px; border-radius:8px; border:1px solid var(--ceo-green)">
+                    <div style="font-size:0.7rem">Intake</div>
+                    <div style="font-weight:700">Normal</div>
+                  </div>
+                </div>
+                <div style="font-size:0.8rem; color:#8b949e">
+                  • Command Center: Active<br>
+                  • Audit Logging: Encrypted & Verified<br>
+                  <span style="color:var(--ceo-gold)">Demo Mode: Awaiting Live API Integration</span>
+                </div>
+              </div>
+
+              <!-- 9. CEO 行动建议 -->
+              <div class="ceo-card col-4">
+                <div class="ceo-card-title">CEO 行动建议</div>
+                <ul class="ceo-action-list">
+                  <li class="ceo-action-item">
+                    <div class="ceo-action-num">1</div>
+                    <div style="font-size:0.85rem">批复 HSBC $12.5M 额度申请</div>
+                  </li>
+                  <li class="ceo-action-item">
+                    <div class="ceo-action-num">2</div>
+                    <div style="font-size:0.85rem">致电法务总监催促合同签发</div>
+                  </li>
+                  <li class="ceo-action-item">
+                    <div class="ceo-action-num">3</div>
+                    <div style="font-size:0.85rem">安排 Client-X 信用复审会议</div>
+                  </li>
+                  <li class="ceo-action-item">
+                    <div class="ceo-action-num">4</div>
+                    <div style="font-size:0.85rem">确认 SBLC 单据缺口处理进度</div>
+                  </li>
+                  <li class="ceo-action-item">
+                    <div class="ceo-action-num">5</div>
+                    <div style="font-size:0.85rem">启动 Q2 流动性拨备调整</div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- 10. 审计说明 -->
+              <div class="ceo-audit-note">
+                当前页面为 CEO MVP 静态演示数据 | 后续接入真实 API、审批、交易、文件和审计日志 | FastOne Institutional Grade Security
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="/assets/i18n.js?v=20260501loading33"></script>
+  <script src="/assets/utils.js?v=20260501loading33"></script>
+  <script src="/assets/api.js?v=20260501loading33"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Init Theme
+      if (window.FastoneTheme) FastoneTheme.initTheme();
+
+      // Init i18n
+      if (window.i18n) i18n.updateUI();
+
+      // Language Switcher Logic (Simple version for CEO page)
+      document.querySelectorAll("[data-lang-switch]").forEach(btn => {
+        btn.onclick = () => {
+          const lang = btn.dataset.langSwitch;
+          if (window.i18n) i18n.setLanguage(lang);
+          // Update active state
+          document.querySelectorAll("[data-lang-switch]").forEach(b => {
+            b.classList.toggle("is-active", b.dataset.langSwitch === lang);
+          });
+        };
+        // Initial active state
+        const currentLang = (window.i18n && i18n.currentLang()) || "zh";
+        btn.classList.toggle("is-active", btn.dataset.langSwitch === currentLang);
+      });
+    });
+  </script>
+
+  <script>
+    /*
+      CEO Cockpit local i18n patch.
+      Purpose: ceo-dashboard.html contains many hard-coded Chinese texts.
+      This patch translates CEO page text nodes without changing global i18n.js.
+    */
+    (function () {
+      const CEO_I18N = {
+        zh: {
+          pageTitle: "CEO 经营驾驶舱 / Executive Cockpit"
+        },
+        en: {
+          pageTitle: "Executive Cockpit"
+        }
+      };
+
+      const TEXT_EN = {
+        "FASTONE": "FASTONE",
+        "HERMES AI AGENT": "HERMES AI AGENT",
+
+        "CEO 经营驾驶舱 / Executive Cockpit": "Executive Cockpit",
+        "系统导航 / Navigation": "System Navigation",
+        "CEO 经营驾驶舱": "Executive Cockpit",
+        "控制台 / Console": "Console",
+        "数据看板 / Dashboard": "Dashboard",
+        "分析面板 / Analysis": "Analysis",
+        "文件中心 / Documents": "Documents",
+        "登录 / Login": "Login",
+        "返回首页 / Home": "Home",
+
+        "今日经营判断：": "Today's executive view: ",
+        "稳健运行": "Stable operation",
+        "，流动性充足，主要贸易金融资产状态正常。": ", sufficient liquidity, and major trade finance assets remain normal.",
+        "风险等级：稳定 (GREEN)": "Risk Level: Stable (GREEN)",
+
+        "今日需决策事项 (5)": "Decisions Required Today (5)",
+        "决策事项": "Decision Item",
+        "金额/影响": "Amount / Impact",
+        "截止时间": "Deadline",
+        "风险": "Risk",
+        "建议": "Recommendation",
+
+        "HSBC SBLC 额度释放申请": "HSBC SBLC limit release request",
+        "Q2 流动性拨备调整方案": "Q2 liquidity reserve adjustment plan",
+        "批准以支持贸易周转": "Approve to support trade turnover",
+        "中": "Medium",
+        "高": "High",
+        "低": "Low",
+
+        "现金流 / 流动性观察": "Cash Flow / Liquidity Watch",
+        "可用流动性": "Available Liquidity",
+        "未来7天预计流出": "Expected Outflow in Next 7 Days",
+        "流动性覆盖率": "Liquidity Coverage Ratio",
+
+        "高风险事项预警": "High-Risk Alerts",
+        "逾期审批阻塞 (48h+)": "Overdue Approval Blockage (48h+)",
+        "法务部 3 项合同待签，涉及标的 $5M。": "Legal department has 3 contracts pending signature, involving $5M.",
+        "客户信用信号恶化 (Client-X)": "Client Credit Signal Deterioration (Client-X)",
+        "AI 监测到外部诉讼风险，建议暂停授信。": "AI detected external litigation risk; recommend suspending credit exposure.",
+
+        "SBLC / DLC 贸易金融状态": "SBLC / DLC Trade Finance Status",
+        "项目与审批阻塞": "Projects & Approval Blockers",
+        "待审批总数": "Total Pending Approvals",
+        "AI / 系统健康": "AI / System Health",
+        "CEO 行动建议": "CEO Action Recommendations",
+
+        "批复 HSBC $12.5M 额度申请": "Approve HSBC $12.5M limit request",
+        "致电法务总监催促合同签发": "Call Legal Director to expedite contract signing",
+        "安排 Client-X 信用复审会议": "Arrange Client-X credit review meeting",
+        "确认 SBLC 单据缺口处理进度": "Confirm progress on SBLC document gap resolution",
+        "启动 Q2 流动性拨备调整": "Initiate Q2 liquidity reserve adjustment",
+
+        "System Status": "System Status",
+        "Institutional Secure": "Institutional Secure",
+
+        "法务": "Legal",
+        "财务": "Finance",
+        "运营": "Operations",
+        "正常": "Normal",
+        "稳定": "Stable",
+        "批准": "Approve",
+        "暂停": "Suspend",
+        "复审": "Review",
+        "待审批": "Pending"
+      };
+
+      const TEXT_ZH = {};
+      Object.keys(TEXT_EN).forEach((zh) => {
+        TEXT_ZH[TEXT_EN[zh]] = zh;
+      });
+
+      function normalizeLang(lang) {
+        return String(lang || "zh").toLowerCase().startsWith("en") ? "en" : "zh";
+      }
+
+      function getCurrentLang() {
+        const bodyLang = document.body && document.body.getAttribute("data-lang");
+        const saved = localStorage.getItem("hermes_lang") || localStorage.getItem("lang") || localStorage.getItem("i18n_lang");
+        if (bodyLang) return normalizeLang(bodyLang);
+        if (saved) return normalizeLang(saved);
+        if (window.i18n && typeof i18n.currentLang === "function") return normalizeLang(i18n.currentLang());
+        return "zh";
+      }
+
+      function translateTextNode(node, lang) {
+        const raw = node.nodeValue;
+        if (!raw || !raw.trim()) return;
+
+        const leading = raw.match(/^\s*/)?.[0] || "";
+        const trailing = raw.match(/\s*$/)?.[0] || "";
+        const key = raw.trim();
+
+        if (lang === "en") {
+          if (TEXT_EN[key]) node.nodeValue = leading + TEXT_EN[key] + trailing;
+        } else {
+          if (TEXT_ZH[key]) node.nodeValue = leading + TEXT_ZH[key] + trailing;
+        }
+      }
+
+      function translateCEOPage(lang) {
+        lang = normalizeLang(lang);
+        document.body.setAttribute("data-lang", lang);
+
+        const pageTitle = document.querySelector(".page-title");
+        if (pageTitle) {
+          pageTitle.textContent = lang === "en" ? CEO_I18N.en.pageTitle : CEO_I18N.zh.pageTitle;
+        }
+
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+          {
+            acceptNode(node) {
+              const parent = node.parentElement;
+              if (!parent) return NodeFilter.FILTER_REJECT;
+              const tag = parent.tagName;
+              if (["SCRIPT", "STYLE", "NOSCRIPT"].includes(tag)) return NodeFilter.FILTER_REJECT;
+              return NodeFilter.FILTER_ACCEPT;
+            }
+          }
+        );
+
+        const nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        nodes.forEach((node) => translateTextNode(node, lang));
+
+        document.querySelectorAll("[data-lang-switch]").forEach((btn) => {
+          const btnLang = normalizeLang(btn.getAttribute("data-lang-switch"));
+          btn.classList.toggle("active", btnLang === lang);
+          btn.classList.toggle("is-active", btnLang === lang);
+          btn.setAttribute("aria-pressed", btnLang === lang ? "true" : "false");
+        });
+      }
+
+      window.applyCEOCockpitI18n = translateCEOPage;
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const initialLang = getCurrentLang();
+        translateCEOPage(initialLang);
+
+        document.querySelectorAll("[data-lang-switch]").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const lang = normalizeLang(btn.getAttribute("data-lang-switch"));
+            localStorage.setItem("hermes_lang", lang);
+            localStorage.setItem("lang", lang);
+            document.body.setAttribute("data-lang", lang);
+
+            if (window.i18n && typeof i18n.setLanguage === "function") {
+              try { i18n.setLanguage(lang); } catch (e) {}
+            }
+
+            translateCEOPage(lang);
+          });
+        });
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      var STORAGE_KEY = "ceoCockpitLang";
+
+      function normalizeLang(lang) {
+        if (!lang) return null;
+        lang = String(lang).toLowerCase();
+        if (lang === "en" || lang.indexOf("en") === 0) return "en";
+        if (lang === "zh" || lang.indexOf("zh") === 0 || lang === "cn") return "zh";
+        return null;
+      }
+
+      function saveLang(lang) {
+        lang = normalizeLang(lang);
+        if (!lang) return;
+        try {
+          localStorage.setItem(STORAGE_KEY, lang);
+        } catch (e) {}
+      }
+
+      function getSavedLang() {
+        try {
+          return normalizeLang(localStorage.getItem(STORAGE_KEY));
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function syncLangButtonState(lang) {
+        lang = normalizeLang(lang);
+        if (!lang) return;
+
+        document.querySelectorAll("[data-lang-switch]").forEach(function (button) {
+          var buttonLang = normalizeLang(button.getAttribute("data-lang-switch"));
+          var active = buttonLang === lang;
+
+          button.classList.toggle("active", active);
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+
+        document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+      }
+
+      function applySavedLang() {
+        var savedLang = getSavedLang();
+        if (!savedLang) return;
+
+        if (typeof window.applyCEOCockpitI18n === "function") {
+          window.applyCEOCockpitI18n(savedLang);
+        }
+
+        syncLangButtonState(savedLang);
+      }
+
+      document.addEventListener(
+        "click",
+        function (event) {
+          var button = event.target.closest("[data-lang-switch]");
+          if (!button) return;
+
+          var lang = normalizeLang(button.getAttribute("data-lang-switch"));
+          if (!lang) return;
+
+          saveLang(lang);
+
+          setTimeout(function () {
+            syncLangButtonState(lang);
+          }, 0);
+        },
+        true
+      );
+
+      if (
+        typeof window.applyCEOCockpitI18n === "function" &&
+        !window.applyCEOCockpitI18n.__langPersistPatched
+      ) {
+        var originalApplyCEOCockpitI18n = window.applyCEOCockpitI18n;
+
+        window.applyCEOCockpitI18n = function (lang) {
+          lang = normalizeLang(lang) || "zh";
+          saveLang(lang);
+          originalApplyCEOCockpitI18n(lang);
+          syncLangButtonState(lang);
+        };
+
+        window.applyCEOCockpitI18n.__langPersistPatched = true;
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(applySavedLang, 0);
+        setTimeout(applySavedLang, 100);
+        setTimeout(applySavedLang, 300);
+      });
+
+      if (document.readyState !== "loading") {
+        setTimeout(applySavedLang, 0);
+        setTimeout(applySavedLang, 100);
+        setTimeout(applySavedLang, 300);
+      }
+    })();
+  </script>
+  </body>
+</html>
