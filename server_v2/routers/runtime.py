@@ -129,6 +129,16 @@ async def runtime_status(_user: dict | None = Depends(optional_auth)) -> dict:
     return _status_payload(get_queue())
 
 
+@router.get("/api/runtime/providers")
+async def runtime_providers(_user: dict | None = Depends(optional_auth)) -> dict:
+    """L7 observability: provider score / state / metrics for Dashboard + War Room."""
+    try:
+        from ..provider_intelligence import provider_scoreboard
+        return provider_scoreboard()
+    except Exception as exc:  # never break the dashboard
+        return {"ok": False, "providers": {}, "error": str(exc)[:200]}
+
+
 @router.get("/api/runtime/tasks")
 async def list_tasks(
     limit: int = Query(default=100, ge=1, le=500),

@@ -116,22 +116,24 @@ def build_legal_structured_result(final_output: str, task: dict, provider_result
     score = compute_quality_score(final_output, steps)
     decision = generate_decision({"quality_score": score})
     attempts = provider_result.get("trace") if isinstance(provider_result.get("trace"), list) else []
+    # Pass through the rich provider_execution produced by run_provider_chain
+    # (recommended_order / actual_order / provider_state / flags / workflow_rec).
     pexec = provider_result.get("provider_execution") if isinstance(provider_result.get("provider_execution"), dict) else {}
-    total_latency_ms = sum(int(a.get("latency_ms") or 0) for a in attempts if isinstance(a, dict))
+    if not pexec:
+        pexec = {
+            "chain": [f'{c["provider"]}:{c["model"]}' for c in PROVIDER_CHAIN],
+            "attempts": attempts,
+            "selected_provider": provider_result.get("provider"),
+            "selected_model": provider_result.get("model"),
+            "total_latency_ms": sum(int(a.get("latency_ms") or 0) for a in attempts if isinstance(a, dict)),
+        }
     trace = {
         "runtime_task_id": task.get("id"),
         "mode": "legal_direct",
         "provider_attempts": attempts,
         "selected_provider": provider_result.get("provider"),
         "selected_model": provider_result.get("model"),
-        "provider_execution": {
-            "chain": [f'{c["provider"]}:{c["model"]}' for c in PROVIDER_CHAIN],
-            "attempts": attempts,
-            "selected_provider": provider_result.get("provider"),
-            "selected_model": provider_result.get("model"),
-            "total_latency_ms": total_latency_ms,
-            "selected": pexec.get("selected"),
-        },
+        "provider_execution": pexec,
         "quality_score": score,
         "fake_fallback": False,
         "completed_at": time.time(),
@@ -173,7 +175,7 @@ def run_legal_workflow_direct(task: dict) -> dict:
     prompt = build_legal_prompt(task)
     task_id = str(task.get("id") or "")
     # Single unified entry point — deterministic Codex->Gemini->xAI->NVIDIA chain.
-    provider_result = run_provider_chain(prompt, task_id=task_id, total_timeout=90.0)
+    provider_result = run_provider_chain(prompt, task_id=task_id, total_timeout=90.0, mode="legal")
     trace = provider_result.get("trace") if isinstance(provider_result.get("trace"), list) else []
     if not provider_result.get("ok"):
         raise WorkflowError(str(provider_result.get("error") or "legal_provider_failed"), trace, "legal_provider_path")

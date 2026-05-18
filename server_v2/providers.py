@@ -303,16 +303,77 @@ def _call_provider(step: dict, prompt: str, single_timeout: float) -> dict:
         }
 
 
-def run_provider_chain(prompt: str, *, task_id: str = "", total_timeout: float = 90.0) -> dict:
+def run_provider_chain(prompt: str, *, task_id: str = "", total_timeout: float = 90.0,
+                        mode: str = "legal") -> dict:
     """Deterministic Codex -> Gemini -> xAI -> NVIDIA execution.
 
     Within each provider, attempts are serial (fill-first / cliproxy rotation
     supplies the next account). Switch provider on auth/quota errors or two
     consecutive empties; retry same provider on transient timeout.
+
+    L7 intelligence is layered on as SHADOW by default: metrics/state are
+    recorded passively; ordering/circuit-breaker only alter execution when
+    the corresponding feature flag is explicitly enabled. With default flags
+    the execution order is exactly PROVIDER_CHAIN (L6 baseline preserved).
     """
+    try:
+        from . import provider_intelligence as _pi
+        _pi.ensure_data_files()
+        flags = _pi.feature_flags()
+        rec_order = _pi.recommended_order(PROVIDER_CHAIN)
+        wf_rec = _pi.workflow_recommendation(mode)
+    except Exception:
+        _pi = None
+        flags = {}
+        rec_order = list(PROVIDER_CHAIN)
+        wf_rec = {"mode": mode, "profile": "balanced", "sla": "balanced"}
+
+    use_dynamic = bool(flags.get("ENABLE_DYNAMIC_PROVIDER_ORDERING"))
+    enforce_breaker = bool(flags.get("ENABLE_CIRCUIT_BREAKER_ENFORCEMENT"))
+    exec_chain = rec_order if use_dynamic else list(PROVIDER_CHAIN)
+
+    # Circuit-breaker enforcement (flag-gated). Safety: never skip ALL providers.
+    if _pi is not None and enforce_breaker:
+        live = [s for s in exec_chain if not _pi.is_cooled_down(s["provider"])]
+        if live:
+            exec_chain = live
+
     started = time.time()
     attempts: list[dict] = []
-    for step in PROVIDER_CHAIN:
+    chain_ids = [f'{s["provider"]}:{s["model"]}' for s in PROVIDER_CHAIN]
+    rec_ids = [f'{s["provider"]}:{s["model"]}' for s in rec_order]
+    actual_ids = [f'{s["provider"]}:{s["model"]}' for s in exec_chain]
+
+    def _pexec(selected: dict | None) -> dict:
+        pe = {
+            "chain": chain_ids,
+            "recommended_order": rec_ids,
+            "actual_order": actual_ids,
+            "attempts": attempts,
+            "selected": selected,
+            "selected_provider": selected["provider"] if selected else None,
+            "selected_model": selected["model"] if selected else None,
+            "workflow_recommendation": wf_rec,
+            "flags": flags,
+            "total_latency_ms": sum(int(a.get("latency_ms") or 0) for a in attempts),
+        }
+        try:
+            if _pi is not None:
+                pe["provider_state"] = _pi.provider_state()
+        except Exception:
+            pass
+        return pe
+
+    def _log(entry: dict) -> None:
+        try:
+            if _pi is not None:
+                _pi.record_attempt(entry["provider"], entry.get("status", ""),
+                                   int(entry.get("latency_ms") or 0), str(entry.get("error") or ""))
+        except Exception:
+            pass
+        attempts.append(entry)
+
+    for step in exec_chain:
         provider, model = step["provider"], step["model"]
         empty_streak = 0
         n = 0
@@ -320,11 +381,11 @@ def run_provider_chain(prompt: str, *, task_id: str = "", total_timeout: float =
             n += 1
             remaining = total_timeout - (time.time() - started)
             if remaining <= 2:
-                attempts.append({"provider": provider, "model": model, "transport": step["transport"],
-                                 "attempt": n, "status": "chain_timeout", "latency_ms": 0,
-                                 "error": "provider_chain_total_timeout"})
+                _log({"provider": provider, "model": model, "transport": step["transport"],
+                      "attempt": n, "status": "chain_timeout", "latency_ms": 0,
+                      "error": "provider_chain_total_timeout"})
                 return {"ok": False, "error": "provider_chain_timeout", "trace": attempts,
-                        "provider_execution": {"attempts": attempts, "selected": None}}
+                        "provider_execution": _pexec(None)}
             single = max(15.0, min(55.0, remaining))
             r = _call_provider(step, prompt, single)
             entry = {"provider": provider, "model": model, "transport": step["transport"],
@@ -332,31 +393,30 @@ def run_provider_chain(prompt: str, *, task_id: str = "", total_timeout: float =
 
             if r["ok"] and is_substantive(r["output"]):
                 entry["status"] = "success"
-                attempts.append(entry)
+                _log(entry)
                 return {"ok": True, "output": r["output"], "provider": provider, "model": model,
                         "trace": attempts,
-                        "provider_execution": {"attempts": attempts,
-                                               "selected": {"provider": provider, "model": model}}}
+                        "provider_execution": _pexec({"provider": provider, "model": model})}
 
             err = r.get("error") or ("empty_or_non_substantive_result" if r["ok"] else "unknown_error")
             entry["error"] = str(err)[:300]
 
             if not r["ok"] and is_auth_error(err):
                 entry["status"] = "auth_error"
-                attempts.append(entry)
+                _log(entry)
                 break  # switch provider immediately
             if not r["ok"] and is_quota_error(err):
                 entry["status"] = "quota_error"
-                attempts.append(entry)
+                _log(entry)
                 break  # switch provider immediately
             if not r["ok"] and is_timeout_error(err):
                 entry["status"] = "timeout"
-                attempts.append(entry)
+                _log(entry)
                 continue  # transient: retry SAME provider
 
             # empty / low-quality / other non-auth error
             entry["status"] = "empty" if r["ok"] else "error"
-            attempts.append(entry)
+            _log(entry)
             if r["ok"]:
                 empty_streak += 1
                 if empty_streak >= 2:
@@ -364,7 +424,7 @@ def run_provider_chain(prompt: str, *, task_id: str = "", total_timeout: float =
             # otherwise retry same provider until MAX_ATTEMPTS_PER_PROVIDER
 
     return {"ok": False, "error": "provider_chain_failed", "trace": attempts,
-            "provider_execution": {"attempts": attempts, "selected": None}}
+            "provider_execution": _pexec(None)}
 
 
 def known_good_chat_path(prompt: str, *, task_id: str = "", total_timeout: float = 60.0) -> dict:
