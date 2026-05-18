@@ -1,0 +1,19 @@
+{
+  "name": "fastone-hermes-finance-workbench-runtime",
+  "private": true,
+  "description": "Runtime test dependencies for the Python Finance Workbench.",
+  "scripts": {
+    "test:english-mode": "node tests/english_mode_no_cjk_scan.js",
+    "lint:js": "node --check assets/app.js && node --check assets/api.js && node --check assets/auth.js && node --check assets/theme.js && node --check assets/navigation-policy.js && node --check tests/english_mode_no_cjk_scan.js && node --check scripts/ui_audit.js",
+    "eslint:check": "eslint assets/theme.js assets/navigation-policy.js tests/english_mode_no_cjk_scan.js",
+    "format:check": "prettier --check \"package.json\" \".prettierrc.json\" \"eslint.config.mjs\" \".github/workflows/workbench-ci.yml\" \"monitoring/**/*.{yml,json}\" \"docs/performance-monitoring-cicd-plan-2026-05-11.md\"",
+    "ci:preflight": ".venv/bin/python -m py_compile app_server.py scripts/platform_acceptance_check.py scripts/workbench_health_gate.py scripts/perf_db_audit.py scripts/export_workspace_artifact.py && .venv/bin/python -m py_compile server_v2/__init__.py server_v2/__main__.py server_v2/config.py server_v2/utils.py server_v2/auth_store.py server_v2/models.py server_v2/deps.py server_v2/providers.py server_v2/workflow.py server_v2/main.py server_v2/routers/__init__.py server_v2/routers/health.py server_v2/routers/auth.py server_v2/routers/runtime.py server_v2/routers/copilots.py server_v2/routers/orchestrate.py server_v2/routers/proxy.py && .venv/bin/python tests/test_server_v2_contract.py && npm run lint:js && npm run eslint:check && npm run format:check && .venv/bin/python tests/test_intelligence_refresh_contract.py && .venv/bin/python tests/test_opc_runtime_adapter_contract.py && .venv/bin/python tests/test_ceo_dashboard_i18n_contract.py && .venv/bin/python tests/test_monitoring_cicd_contract.py && .venv/bin/python tests/test_runtime_queue_contract.py && .venv/bin/python tests/test_legal_export_contract.py && .venv/bin/python tests/test_legal_chat_no_fake_fallback.py && .venv/bin/python tests/test_general_law_form_integration.py && .venv/bin/python tests/test_orchestration_workbench_contract.py && .venv/bin/python scripts/perf_db_audit.py",
+    "ui:audit": "node scripts/ui_audit.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "prettier": "^3.6.2",
+    "playwright": "^1.57.0"
+  }
+}

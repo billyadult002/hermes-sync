@@ -1,0 +1,10 @@
+httpx
+PyYAML
+openpyxl
+python-docx
+python-pptx
+tomli; python_version < '3.11'
+# server_v2 FastAPI stack
+fastapi[standard]>=0.130
+uvicorn[standard]>=0.45
+pydantic>=2.0
