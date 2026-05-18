@@ -316,12 +316,33 @@ def run_provider_chain(prompt: str, *, task_id: str = "", total_timeout: float =
     the corresponding feature flag is explicitly enabled. With default flags
     the execution order is exactly PROVIDER_CHAIN (L6 baseline preserved).
     """
+    l8 = {}
+    profile = {"mode": mode, "complexity": "medium", "sla": "balanced", "preferred_providers": []}
+    policy_decision = {"enforced": False, "reason": "n/a"}
+    multi_agent = {"enabled": False, "mode": "shadow"}
     try:
         from . import provider_intelligence as _pi
         _pi.ensure_data_files()
         flags = _pi.feature_flags()
+        l8 = _pi.l8_feature_flags()
         rec_order = _pi.recommended_order(PROVIDER_CHAIN)
         wf_rec = _pi.workflow_recommendation(mode)
+        try:
+            from .workflow_intelligence import analyze_prompt
+            profile = analyze_prompt(prompt, mode)
+        except Exception:
+            pass
+        try:
+            from .provider_policy import evaluate as _pol_eval
+            scores = {s["provider"]: _pi.score_provider_l8(s["provider"], mode) for s in PROVIDER_CHAIN}
+            policy_decision = _pol_eval(mode, PROVIDER_CHAIN, scores)
+        except Exception:
+            pass
+        try:
+            from .multi_agent import plan_only_shadow
+            multi_agent = plan_only_shadow(prompt, profile, bool(l8.get("ENABLE_MULTI_AGENT")))
+        except Exception:
+            pass
     except Exception:
         _pi = None
         flags = {}
@@ -330,7 +351,22 @@ def run_provider_chain(prompt: str, *, task_id: str = "", total_timeout: float =
 
     use_dynamic = bool(flags.get("ENABLE_DYNAMIC_PROVIDER_ORDERING"))
     enforce_breaker = bool(flags.get("ENABLE_CIRCUIT_BREAKER_ENFORCEMENT"))
-    exec_chain = rec_order if use_dynamic else list(PROVIDER_CHAIN)
+    use_adaptive = bool(l8.get("ENABLE_ADAPTIVE_ROUTING"))
+    use_policy = bool(l8.get("ENABLE_POLICY_ROUTING"))
+
+    # L8 adaptive ordering is SHADOW unless ENABLE_ADAPTIVE_ROUTING. Recommended
+    # order reflects the adaptive scorer; actual execution stays PROVIDER_CHAIN
+    # unless a flag explicitly activates reordering (L6/L7 baseline preserved).
+    if _pi is not None:
+        try:
+            rec_order = _pi.adaptive_order(PROVIDER_CHAIN, mode)
+        except Exception:
+            pass
+    exec_chain = rec_order if (use_dynamic or use_adaptive) else list(PROVIDER_CHAIN)
+
+    # Policy enforcement (flag-gated; advisory by default). Never empties chain.
+    if use_policy and policy_decision.get("allowed_steps"):
+        exec_chain = policy_decision["allowed_steps"] or exec_chain
 
     # Circuit-breaker enforcement (flag-gated). Safety: never skip ALL providers.
     if _pi is not None and enforce_breaker:
@@ -356,10 +392,31 @@ def run_provider_chain(prompt: str, *, task_id: str = "", total_timeout: float =
             "workflow_recommendation": wf_rec,
             "flags": flags,
             "total_latency_ms": sum(int(a.get("latency_ms") or 0) for a in attempts),
+            # --- L8 audit trail ---
+            "l8_flags": l8,
+            "workflow_profile": profile,
+            "policy_decision": policy_decision,
+            "multi_agent": multi_agent,
+            "adaptive_routing": "active" if (use_dynamic or use_adaptive) else "shadow",
         }
         try:
             if _pi is not None:
                 pe["provider_state"] = _pi.provider_state()
+        except Exception:
+            pass
+        try:
+            if _pi is not None:
+                _pi.record_execution_memory({
+                    "ts": time.time(), "task_id": task_id, "mode": mode,
+                    "chain": chain_ids, "recommended_order": rec_ids,
+                    "actual_order": actual_ids,
+                    "selected_provider": selected["provider"] if selected else None,
+                    "success": selected is not None,
+                    "latency_ms": sum(int(a.get("latency_ms") or 0) for a in attempts),
+                    "attempts": len(attempts),
+                    "complexity": profile.get("complexity"),
+                    "sla": profile.get("sla"),
+                })
         except Exception:
             pass
         return pe

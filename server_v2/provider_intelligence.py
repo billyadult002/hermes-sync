@@ -37,6 +37,19 @@ _DEFAULT_FLAGS = {
     "ENABLE_CIRCUIT_BREAKER_ENFORCEMENT": False,
 }
 
+# --- L8 ---
+L8_FLAGS_PATH = _DATA / "l8_feature_flags.json"
+EXEC_MEMORY_PATH = _DATA / "execution_memory.jsonl"
+LEARNING_REPORT_PATH = _DATA / "runtime_learning_report.json"
+_EXEC_MEMORY_MAX_LINES = 2000
+
+_DEFAULT_L8_FLAGS = {
+    "ENABLE_ADAPTIVE_ROUTING": False,
+    "ENABLE_POLICY_ROUTING": False,
+    "ENABLE_MULTI_AGENT": False,
+    "ENABLE_SELF_HEALING_RECOVERY": True,
+}
+
 
 def _blank_metric() -> dict:
     return {
@@ -99,8 +112,124 @@ def ensure_data_files() -> None:
             _atomic_write(STATE_PATH, {p: _blank_state() for p in _PROVIDERS})
         if not FLAGS_PATH.exists():
             _atomic_write(FLAGS_PATH, dict(_DEFAULT_FLAGS))
+        if not L8_FLAGS_PATH.exists():
+            _atomic_write(L8_FLAGS_PATH, dict(_DEFAULT_L8_FLAGS))
     except Exception:
         pass
+
+
+def l8_feature_flags() -> dict:
+    try:
+        if L8_FLAGS_PATH.exists():
+            data = json.loads(L8_FLAGS_PATH.read_text(encoding="utf-8") or "{}")
+            if isinstance(data, dict):
+                return {**_DEFAULT_L8_FLAGS,
+                        **{k: bool(v) for k, v in data.items() if k in _DEFAULT_L8_FLAGS}}
+    except Exception:
+        pass
+    return dict(_DEFAULT_L8_FLAGS)
+
+
+def record_execution_memory(entry: dict) -> None:
+    """Append one workflow execution record (capped, crash-safe)."""
+    try:
+        EXEC_MEMORY_PATH.parent.mkdir(parents=True, exist_ok=True)
+        line = json.dumps(entry, ensure_ascii=False)
+        with EXEC_MEMORY_PATH.open("a", encoding="utf-8") as fh:
+            fh.write(line + "\n")
+        # Cap: keep last N lines.
+        if EXEC_MEMORY_PATH.stat().st_size > _MAX_FILE_BYTES * 4:
+            lines = EXEC_MEMORY_PATH.read_text(encoding="utf-8").splitlines()[-_EXEC_MEMORY_MAX_LINES:]
+            tmp = EXEC_MEMORY_PATH.with_suffix(".tmp")
+            tmp.write_text("\n".join(lines) + "\n", encoding="utf-8")
+            os.replace(tmp, EXEC_MEMORY_PATH)
+    except Exception:
+        pass
+
+
+def read_execution_memory(limit: int = 200) -> list[dict]:
+    try:
+        if not EXEC_MEMORY_PATH.exists():
+            return []
+        out = []
+        for ln in EXEC_MEMORY_PATH.read_text(encoding="utf-8").splitlines()[-limit:]:
+            try:
+                out.append(json.loads(ln))
+            except Exception:
+                continue
+        return out
+    except Exception:
+        return []
+
+
+def build_learning_report() -> dict:
+    """Analyze execution memory: best chain, best provider per workflow."""
+    try:
+        mem = read_execution_memory(limit=_EXEC_MEMORY_MAX_LINES)
+        by_provider: dict = {}
+        by_mode: dict = {}
+        for r in mem:
+            p = r.get("selected_provider")
+            mode = r.get("mode") or "unknown"
+            ok = bool(r.get("success"))
+            if p:
+                d = by_provider.setdefault(p, {"runs": 0, "success": 0, "latency_sum": 0})
+                d["runs"] += 1
+                d["success"] += 1 if ok else 0
+                d["latency_sum"] += int(r.get("latency_ms") or 0)
+            md = by_mode.setdefault(mode, {"runs": 0, "success": 0})
+            md["runs"] += 1
+            md["success"] += 1 if ok else 0
+        for p, d in by_provider.items():
+            d["success_rate"] = round(d["success"] / d["runs"], 4) if d["runs"] else 0.0
+            d["avg_latency_ms"] = int(d["latency_sum"] / d["runs"]) if d["runs"] else 0
+        best_provider = max(by_provider.items(),
+                            key=lambda kv: (kv[1]["success_rate"], -kv[1]["avg_latency_ms"]),
+                            default=(None, {}))[0]
+        report = {
+            "ok": True,
+            "total_records": len(mem),
+            "by_provider": by_provider,
+            "by_mode": by_mode,
+            "most_stable_provider": best_provider,
+            "generated_at": time.time(),
+        }
+        _atomic_write(LEARNING_REPORT_PATH, report)
+        return report
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)[:160], "total_records": 0}
+
+
+def score_provider_l8(provider: str, mode: str = "legal") -> float:
+    """L8 weighted score: quality·0.35 + success·0.25 + latency·0.15
+    + cost_efficiency·0.15 + reliability·0.10. Deterministic; never raises."""
+    try:
+        m = (_load(METRICS_PATH, _blank_metric)).get(provider) or _blank_metric()
+        s = provider_state(provider)
+        total = m.get("success_count", 0) + m.get("failure_count", 0)
+        success_rate = float(m.get("success_rate") or (0.6 if total == 0 else 0.0))
+        cq = m.get("completion_quality") if isinstance(m.get("completion_quality"), dict) else {}
+        quality = float(cq.get(mode, m.get("quality_score", 0.85)) if total else 0.85)
+        avg = float(m.get("avg_latency_ms") or 0)
+        latency_score = 1.0 if avg <= 0 else max(0.0, min(1.0, 1.0 - avg / 120000.0))
+        cost = float(m.get("cost_efficiency", 0.8))
+        reliability = 1.0 if total == 0 else max(0.0, 1.0 - m.get("failure_count", 0) / max(1, total))
+        recent = min(1.0, int(s.get("consecutive_failures") or 0) / 5.0)
+        score = (quality * 0.35 + success_rate * 0.25 + latency_score * 0.15
+                 + cost * 0.15 + reliability * 0.10) - recent * 0.05
+        return round(max(0.0, min(1.0, score)), 4)
+    except Exception:
+        return 0.5
+
+
+def adaptive_order(chain: list[dict], mode: str = "legal") -> list[dict]:
+    """L8 adaptive ordering — score-sorted, deterministic, stable, lossless.
+    Never mutates input; pure recommendation."""
+    try:
+        return sorted(chain, key=lambda step: (-score_provider_l8(step["provider"], mode),
+                                               step["provider"]))
+    except Exception:
+        return list(chain)
 
 
 def _classify(status: str, error: str) -> str:

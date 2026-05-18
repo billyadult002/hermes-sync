@@ -139,6 +139,50 @@ async def runtime_providers(_user: dict | None = Depends(optional_auth)) -> dict
         return {"ok": False, "providers": {}, "error": str(exc)[:200]}
 
 
+@router.get("/api/runtime/provider-analytics")
+async def provider_analytics(_user: dict | None = Depends(optional_auth)) -> dict:
+    try:
+        from ..provider_intelligence import provider_scoreboard, l8_feature_flags
+        sb = provider_scoreboard()
+        sb["l8_flags"] = l8_feature_flags()
+        return sb
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)[:200]}
+
+
+@router.get("/api/runtime/runtime-learning")
+async def runtime_learning(_user: dict | None = Depends(optional_auth)) -> dict:
+    try:
+        from ..provider_intelligence import build_learning_report
+        return build_learning_report()
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)[:200]}
+
+
+@router.get("/api/runtime/execution-memory")
+async def execution_memory(limit: int = Query(default=100, ge=1, le=500),
+                           _user: dict | None = Depends(optional_auth)) -> dict:
+    try:
+        from ..provider_intelligence import read_execution_memory
+        rec = read_execution_memory(limit=limit)
+        return {"ok": True, "count": len(rec), "records": rec}
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)[:200]}
+
+
+@router.get("/api/runtime/provider-policy")
+async def provider_policy_endpoint(mode: str = Query(default="legal"),
+                                   _user: dict | None = Depends(optional_auth)) -> dict:
+    try:
+        from ..provider_policy import evaluate
+        from ..providers import PROVIDER_CHAIN
+        from ..provider_intelligence import score_provider_l8
+        scores = {s["provider"]: score_provider_l8(s["provider"], mode) for s in PROVIDER_CHAIN}
+        return {"ok": True, "decision": evaluate(mode, PROVIDER_CHAIN, scores)}
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)[:200]}
+
+
 @router.get("/api/runtime/tasks")
 async def list_tasks(
     limit: int = Query(default=100, ge=1, le=500),
