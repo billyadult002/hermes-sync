@@ -50,6 +50,16 @@ _DEFAULT_L8_FLAGS = {
     "ENABLE_SELF_HEALING_RECOVERY": True,
 }
 
+# --- L9/L10 ---
+L9L10_FLAGS_PATH = _DATA / "l9_l10_feature_flags.json"
+_DEFAULT_L9L10_FLAGS = {
+    "ENABLE_COGNITIVE_ROUTING": False,
+    "ENABLE_AGENT_ARBITRATION": False,
+    "ENABLE_POLICY_ENFORCEMENT": False,
+    "ENABLE_AUTONOMOUS_GRAPH_EXECUTION": False,
+    "ENABLE_RUNTIME_GOVERNANCE": False,
+}
+
 
 def _blank_metric() -> dict:
     return {
@@ -114,8 +124,22 @@ def ensure_data_files() -> None:
             _atomic_write(FLAGS_PATH, dict(_DEFAULT_FLAGS))
         if not L8_FLAGS_PATH.exists():
             _atomic_write(L8_FLAGS_PATH, dict(_DEFAULT_L8_FLAGS))
+        if not L9L10_FLAGS_PATH.exists():
+            _atomic_write(L9L10_FLAGS_PATH, dict(_DEFAULT_L9L10_FLAGS))
     except Exception:
         pass
+
+
+def l9_l10_feature_flags() -> dict:
+    try:
+        if L9L10_FLAGS_PATH.exists():
+            data = json.loads(L9L10_FLAGS_PATH.read_text(encoding="utf-8") or "{}")
+            if isinstance(data, dict):
+                return {**_DEFAULT_L9L10_FLAGS,
+                        **{k: bool(v) for k, v in data.items() if k in _DEFAULT_L9L10_FLAGS}}
+    except Exception:
+        pass
+    return dict(_DEFAULT_L9L10_FLAGS)
 
 
 def l8_feature_flags() -> dict:

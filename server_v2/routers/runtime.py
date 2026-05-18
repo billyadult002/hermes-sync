@@ -170,6 +170,32 @@ async def execution_memory(limit: int = Query(default=100, ge=1, le=500),
         return {"ok": False, "error": str(exc)[:200]}
 
 
+@router.get("/api/runtime/governance")
+async def runtime_governance(mode: str = Query(default="legal"),
+                             _user: dict | None = Depends(optional_auth)) -> dict:
+    """L9/L10 cognitive + governance + agent-society shadow snapshot."""
+    try:
+        from ..provider_intelligence import l9_l10_feature_flags, score_provider_l8
+        from ..providers import PROVIDER_CHAIN
+        from ..cognitive import cognitive_analyze
+        from ..agent_society import run_agent_society
+        from ..governance import governance_recommendation, safety_guard, kill_switch_active
+        cog = cognitive_analyze("legal workflow governance snapshot", mode)
+        scores = {s["provider"]: score_provider_l8(s["provider"], mode) for s in PROVIDER_CHAIN}
+        return {
+            "ok": True,
+            "l9_l10_flags": l9_l10_feature_flags(),
+            "kill_switch_active": kill_switch_active(),
+            "cognitive": cog,
+            "agent_society": run_agent_society("snapshot", cog, False),
+            "governance": governance_recommendation(mode, PROVIDER_CHAIN, scores, cog),
+            "safety_guard": safety_guard({"provider_reroutes": 0, "routing_recursion": 0,
+                                          "agent_rounds": 1, "total_attempts": 1}),
+        }
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)[:200]}
+
+
 @router.get("/api/runtime/provider-policy")
 async def provider_policy_endpoint(mode: str = Query(default="legal"),
                                    _user: dict | None = Depends(optional_auth)) -> dict:

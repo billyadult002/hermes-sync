@@ -349,10 +349,43 @@ def run_provider_chain(prompt: str, *, task_id: str = "", total_timeout: float =
         rec_order = list(PROVIDER_CHAIN)
         wf_rec = {"mode": mode, "profile": "balanced", "sla": "balanced"}
 
+    # --- L9/L10 cognitive + agent society + governance (SHADOW) ---
+    l9l10 = {}
+    cognitive = {"shadow": True}
+    agent_society = {"mode": "shadow"}
+    governance = {"shadow": True}
+    safety = {"ok": True, "violations": []}
+    kill_switch = False
+    try:
+        if _pi is not None:
+            l9l10 = _pi.l9_l10_feature_flags()
+        from .governance import kill_switch_active, governance_recommendation, safety_guard
+        kill_switch = kill_switch_active()
+        from .cognitive import cognitive_analyze
+        cognitive = cognitive_analyze(prompt, mode)
+        from .agent_society import run_agent_society
+        agent_society = run_agent_society(
+            prompt, cognitive, bool(l9l10.get("ENABLE_AGENT_ARBITRATION")))
+        scores2 = {}
+        try:
+            scores2 = {s["provider"]: _pi.score_provider_l8(s["provider"], mode)
+                       for s in PROVIDER_CHAIN} if _pi else {}
+        except Exception:
+            scores2 = {}
+        governance = governance_recommendation(mode, PROVIDER_CHAIN, scores2, cognitive)
+        safety = safety_guard({"provider_reroutes": 0, "routing_recursion": 0,
+                               "agent_rounds": agent_society.get("rounds_used", 0),
+                               "total_attempts": 0})
+    except Exception:
+        pass
+
     use_dynamic = bool(flags.get("ENABLE_DYNAMIC_PROVIDER_ORDERING"))
     enforce_breaker = bool(flags.get("ENABLE_CIRCUIT_BREAKER_ENFORCEMENT"))
     use_adaptive = bool(l8.get("ENABLE_ADAPTIVE_ROUTING"))
     use_policy = bool(l8.get("ENABLE_POLICY_ROUTING"))
+    # L10 governance enforcement is flag-gated AND kill-switch overridable.
+    gov_enforce = bool(l9l10.get("ENABLE_POLICY_ENFORCEMENT")) and not kill_switch
+    cognitive_routing = bool(l9l10.get("ENABLE_COGNITIVE_ROUTING")) and not kill_switch
 
     # L8 adaptive ordering is SHADOW unless ENABLE_ADAPTIVE_ROUTING. Recommended
     # order reflects the adaptive scorer; actual execution stays PROVIDER_CHAIN
@@ -362,7 +395,12 @@ def run_provider_chain(prompt: str, *, task_id: str = "", total_timeout: float =
             rec_order = _pi.adaptive_order(PROVIDER_CHAIN, mode)
         except Exception:
             pass
-    exec_chain = rec_order if (use_dynamic or use_adaptive) else list(PROVIDER_CHAIN)
+    exec_chain = rec_order if (use_dynamic or use_adaptive or cognitive_routing) else list(PROVIDER_CHAIN)
+
+    # L10 KILL SWITCH + safety guard: force pure deterministic chain. This is
+    # the unconditional escape hatch — overrides every flag.
+    if kill_switch or not safety.get("ok", True):
+        exec_chain = list(PROVIDER_CHAIN)
 
     # Policy enforcement (flag-gated; advisory by default). Never empties chain.
     if use_policy and policy_decision.get("allowed_steps"):
@@ -398,6 +436,14 @@ def run_provider_chain(prompt: str, *, task_id: str = "", total_timeout: float =
             "policy_decision": policy_decision,
             "multi_agent": multi_agent,
             "adaptive_routing": "active" if (use_dynamic or use_adaptive) else "shadow",
+            # --- L9/L10 cognitive + governance audit trail ---
+            "l9_l10_flags": l9l10,
+            "cognitive": cognitive,
+            "agent_society": agent_society,
+            "governance": governance,
+            "safety_guard": safety,
+            "kill_switch_active": kill_switch,
+            "governance_mode": "enforce" if gov_enforce else "shadow",
         }
         try:
             if _pi is not None:
