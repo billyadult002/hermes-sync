@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import http.cookiejar
 import json
 import os
 import sys
@@ -9,17 +10,56 @@ import time
 import urllib.error
 import urllib.request
 
+# /api/orchestrate and /api/runtime/task require auth. Use a real login (same
+# mechanism as workbench_health_gate.py) so the L6 check exercises the genuine
+# authenticated workflow path. The workflow RESULT is never faked.
+_BROWSER_SESSION = f"runtime-e2e-{int(time.time())}"
+_OPENER: urllib.request.OpenerDirector | None = None
+
+
+def _auth_headers() -> dict:
+    return {"X-Hermes-Browser-Session": _BROWSER_SESSION}
+
+
+def authenticate(base_url: str) -> tuple[bool, dict]:
+    """Real login; binds a session cookie into the module opener."""
+    global _OPENER
+    email = os.getenv("HERMES_HEALTH_EMAIL", "bill@fastonegroup.com")
+    password = os.getenv("HERMES_HEALTH_PASSWORD", "")
+    if not password:
+        return False, {"error": "missing HERMES_HEALTH_PASSWORD"}
+    jar = http.cookiejar.CookieJar()
+    _OPENER = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
+    raw = json.dumps({"email": email, "password": password}).encode("utf-8")
+    req = urllib.request.Request(
+        f"{base_url.rstrip('/')}/api/auth/login",
+        data=raw,
+        headers={"Content-Type": "application/json", **_auth_headers()},
+        method="POST",
+    )
+    try:
+        with _OPENER.open(req, timeout=15) as resp:
+            body = json.loads(resp.read().decode("utf-8") or "{}")
+            return resp.status == 200 and bool(body.get("authenticated")), body
+    except urllib.error.HTTPError as exc:
+        return False, {"status": exc.code, "raw": exc.read().decode("utf-8", "ignore")[:300]}
+
+
+def _open(req: urllib.request.Request, timeout: int):
+    opener = _OPENER or urllib.request
+    return opener.open(req, timeout=timeout)
+
 
 def post_json(base_url: str, path: str, payload: dict, timeout: int = 15) -> tuple[int, dict]:
     raw = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
         f"{base_url.rstrip('/')}{path}",
         data=raw,
-        headers={"Content-Type": "application/json"},
+        headers={"Content-Type": "application/json", **_auth_headers()},
         method="POST",
     )
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
+        with _open(req, timeout) as resp:
             return int(resp.status), json.loads(resp.read().decode("utf-8") or "{}")
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", errors="ignore")
@@ -31,8 +71,13 @@ def post_json(base_url: str, path: str, payload: dict, timeout: int = 15) -> tup
 
 
 def get_json(base_url: str, path: str, timeout: int = 10) -> tuple[int, dict]:
+    req = urllib.request.Request(
+        f"{base_url.rstrip('/')}{path}",
+        headers=_auth_headers(),
+        method="GET",
+    )
     try:
-        with urllib.request.urlopen(f"{base_url.rstrip('/')}{path}", timeout=timeout) as resp:
+        with _open(req, timeout) as resp:
             return int(resp.status), json.loads(resp.read().decode("utf-8") or "{}")
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", errors="ignore")
@@ -64,6 +109,11 @@ def main() -> int:
     }
     if args.test_mode:
         request_payload["test_mode"] = True
+
+    ok_auth, auth_body = authenticate(args.base_url)
+    if not ok_auth:
+        print(json.dumps({"PASS": False, "FAILED_REASON": "authentication_failed", "payload": auth_body}, ensure_ascii=False))
+        return 1
 
     status, accepted = post_json(args.base_url, "/api/orchestrate", request_payload)
     task_id = str(accepted.get("task_id") or "")

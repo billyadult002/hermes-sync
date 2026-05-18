@@ -143,19 +143,30 @@ def build_legal_structured_result(final_output: str, task: dict, provider_result
 # Direct legal workflow
 # ---------------------------------------------------------------------------
 
+class WorkflowError(RuntimeError):
+    """Carries provider trace so failed tasks get a structured result."""
+
+    def __init__(self, message: str, trace: list | None = None, layer: str = "workflow") -> None:
+        super().__init__(message)
+        self.trace = trace if isinstance(trace, list) else []
+        self.layer = layer
+
+
 def run_legal_workflow_direct(task: dict) -> dict:
     """Call the AI provider and build a structured legal result.
 
-    Raises RuntimeError on failure so the worker can mark the task failed.
+    Raises WorkflowError (with provider trace) on failure so the worker can
+    persist a structured failure result.
     """
     prompt = build_legal_prompt(task)
     task_id = str(task.get("id") or "")
     provider_result = known_good_chat_path(prompt, task_id=task_id, total_timeout=90.0)
+    trace = provider_result.get("trace") if isinstance(provider_result.get("trace"), list) else []
     if not provider_result.get("ok"):
-        raise RuntimeError(str(provider_result.get("error") or "legal_provider_failed"))
+        raise WorkflowError(str(provider_result.get("error") or "legal_provider_failed"), trace, "legal_provider_path")
     output = str(provider_result.get("output") or "").strip()
     if is_provider_failure(output) or classify_result(output) in {"empty", "low_quality", "fallback"}:
-        raise RuntimeError("legal_provider_non_substantive")
+        raise WorkflowError("legal_provider_non_substantive", trace, "legal_provider_path")
     return build_legal_structured_result(output, task, provider_result)
 
 
@@ -251,8 +262,38 @@ def _run_legal_orchestrate(
 # Autonomous worker pool (mirrors app_server.py autonomous_worker)
 # ---------------------------------------------------------------------------
 
+# Worker liveness registry (real heartbeat, mirrors app_server.py agents).
+_WORKER_HEARTBEATS: dict[str, float] = {}
+_WORKERS_STARTED = False
+_HEARTBEAT_LOCK = threading.Lock()
+
+
+def _touch_heartbeat(agent_id: str) -> None:
+    with _HEARTBEAT_LOCK:
+        _WORKER_HEARTBEATS[agent_id] = time.time()
+
+
+def worker_diagnostics() -> dict:
+    """Genuine worker-pool liveness for /api/runtime/diagnostics."""
+    now = time.time()
+    with _HEARTBEAT_LOCK:
+        agents = [
+            {"agent_id": aid, "last_seen": ts, "age_sec": round(now - ts, 1)}
+            for aid, ts in _WORKER_HEARTBEATS.items()
+        ]
+        started = _WORKERS_STARTED
+    last_seens = [a["last_seen"] for a in agents] or [0.0]
+    return {
+        "agents": agents,
+        "worker_alive": any(now - ls < 15 for ls in last_seens) if agents else False,
+        "queue_dispatch": "ok" if started else "not_started",
+        "heartbeat_updated_at": max(last_seens),
+    }
+
+
 def start_workers(queue: QueueManager, pool_size: int = 3, max_parallel: int = 3) -> None:
     """Spawn daemon worker threads that process the queue."""
+    global _WORKERS_STARTED
     for idx in range(min(pool_size, max_parallel)):
         thread = threading.Thread(
             target=_worker_loop,
@@ -261,12 +302,14 @@ def start_workers(queue: QueueManager, pool_size: int = 3, max_parallel: int = 3
             name=f"v2-worker-{idx + 1}",
         )
         thread.start()
+    _WORKERS_STARTED = True
 
 
 def _worker_loop(queue: QueueManager, agent_index: int) -> None:
     agent_id = f"v2-agent-{agent_index}"
     while True:
         try:
+            _touch_heartbeat(agent_id)
             task = queue.next(agent_id)
             if task is None:
                 time.sleep(1.5)
@@ -275,11 +318,26 @@ def _worker_loop(queue: QueueManager, agent_index: int) -> None:
             try:
                 run_workflow(task, agent_id, queue)
             except Exception as exc:
+                trace = getattr(exc, "trace", []) or []
+                layer = getattr(exc, "layer", "workflow")
+                failure_result = {
+                    "status": "failed",
+                    "error": str(exc)[:1000],
+                    "failure_layer": layer,
+                    "trace": {
+                        "provider_attempts": trace,
+                        "failure": str(exc)[:500],
+                        "failure_layer": layer,
+                    },
+                    "completed_at": time.time(),
+                }
                 queue.update(
                     task_id,
                     status="failed",
                     error=str(exc)[:1000],
                     failed_at=time.time(),
+                    result=failure_result,
                 )
+            _touch_heartbeat(agent_id)
         except Exception:
             time.sleep(2)

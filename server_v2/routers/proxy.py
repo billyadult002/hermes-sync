@@ -23,14 +23,8 @@ def _get_client() -> httpx.AsyncClient:
     return _client
 
 
-@router.api_route(
-    "/api/{path:path}",
-    methods=["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
-    include_in_schema=False,
-)
-async def proxy_to_legacy(request: Request, path: str) -> Response:
-    """Forward unmatched /api/* requests to legacy app_server.py on port 8767."""
-    url = f"/api/{path}"
+async def _forward(request: Request, url: str) -> Response:
+    """Forward an arbitrary request to the legacy backend, preserving method/body/headers."""
     if request.url.query:
         url = f"{url}?{request.url.query}"
     headers = {k: v for k, v in request.headers.items() if k.lower() not in ("host", "content-length")}
@@ -61,3 +55,25 @@ async def proxy_to_legacy(request: Request, path: str) -> Response:
             status_code=502,
             media_type="application/json",
         )
+
+
+@router.api_route(
+    "/api/{path:path}",
+    methods=["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
+    include_in_schema=False,
+)
+async def proxy_api_to_legacy(request: Request, path: str) -> Response:
+    """Forward unmatched /api/* requests to legacy app_server.py on port 8767."""
+    return await _forward(request, f"/api/{path}")
+
+
+@router.api_route(
+    "/{path:path}",
+    methods=["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
+    include_in_schema=False,
+)
+async def proxy_legacy_frontend(request: Request, path: str) -> Response:
+    """Strangler-fig: forward all other unhandled routes (legacy console.html,
+    /assets/*, etc.) to the legacy backend during the migration period.
+    server_v2's own /api routes are registered earlier and take precedence."""
+    return await _forward(request, f"/{path}")

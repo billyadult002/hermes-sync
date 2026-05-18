@@ -6,7 +6,10 @@ import time
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+import asyncio
+import contextlib
+
+from fastapi import APIRouter, Depends, HTTPException, Query, WebSocket, WebSocketDisconnect
 
 from ..config import (
     AGENT_POOL_SIZE,
@@ -16,7 +19,7 @@ from ..config import (
     MAX_COMPLETED_TASK_HISTORY,
     MAX_FAILED_TASK_HISTORY,
 )
-from ..deps import require_auth
+from ..deps import optional_auth, require_auth
 from ..models import EnqueueTaskRequest
 
 # Import shared queue manager from parent package
@@ -120,14 +123,16 @@ def _status_payload(q: QueueManager) -> dict:
 
 
 @router.get("/api/runtime/status")
-async def runtime_status(_user: dict = Depends(require_auth)) -> dict:
+async def runtime_status(_user: dict | None = Depends(optional_auth)) -> dict:
+    # Public read (parity with legacy app_server.py): the React dashboard polls
+    # this unauthenticated for the live status widget.
     return _status_payload(get_queue())
 
 
 @router.get("/api/runtime/tasks")
 async def list_tasks(
     limit: int = Query(default=100, ge=1, le=500),
-    _user: dict = Depends(require_auth),
+    _user: dict | None = Depends(optional_auth),
 ) -> dict:
     q = get_queue()
     tasks = sorted(q.all(), key=lambda t: float(t.get("created_at") or 0), reverse=True)[:limit]
@@ -171,6 +176,28 @@ async def enqueue_task(
     return {"ok": True, "task": task, "runtime": _status_payload(q)}
 
 
+@router.websocket("/ws/metrics")
+async def ws_metrics(ws: WebSocket) -> None:
+    """Native live metrics stream (parity with legacy app_server.py /ws/metrics).
+
+    server_v2 owns the runtime, so it serves this directly rather than proxying.
+    Public, like the legacy endpoint — the React Control panel subscribes to it.
+    """
+    await ws.accept()
+    try:
+        q = get_queue()
+        await ws.send_json({"type": "metrics", **q.metrics()})
+        while True:
+            await asyncio.sleep(15)
+            await ws.send_json({"type": "metrics", **get_queue().metrics()})
+            await ws.send_json({"type": "ping", "timestamp": int(time.time() * 1000)})
+    except WebSocketDisconnect:
+        pass
+    except Exception:
+        with contextlib.suppress(Exception):
+            await ws.close()
+
+
 @router.get("/api/runtime/diagnostics")
 async def runtime_diagnostics(_user: dict = Depends(require_auth)) -> dict:
     now = time.time()
@@ -192,12 +219,14 @@ async def runtime_diagnostics(_user: dict = Depends(require_auth)) -> dict:
             "STUCK_RUNNING": bool(updated and now - updated > 30),
             "result_empty": not bool(task.get("result")),
         })
+    from ..workflow import worker_diagnostics
+    wd = worker_diagnostics()
     return {
         "ok": True,
-        "worker_alive": False,
-        "queue_dispatch": "v2_server",
-        "heartbeat_updated_at": 0,
-        "agents": [],
+        "worker_alive": wd["worker_alive"],
+        "queue_dispatch": wd["queue_dispatch"],
+        "heartbeat_updated_at": wd["heartbeat_updated_at"],
+        "agents": wd["agents"],
         "metrics": q.metrics(),
         "stale_running": stale_running,
     }
