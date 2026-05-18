@@ -12,12 +12,13 @@ import time
 from pathlib import Path
 
 from .providers import (
+    PROVIDER_CHAIN,
     classify_result,
     compute_quality_score,
     generate_decision,
     is_low_quality,
     is_provider_failure,
-    known_good_chat_path,
+    run_provider_chain,
 )
 
 # Import shared queue manager
@@ -114,12 +115,23 @@ def build_legal_structured_result(final_output: str, task: dict, provider_result
     ]
     score = compute_quality_score(final_output, steps)
     decision = generate_decision({"quality_score": score})
+    attempts = provider_result.get("trace") if isinstance(provider_result.get("trace"), list) else []
+    pexec = provider_result.get("provider_execution") if isinstance(provider_result.get("provider_execution"), dict) else {}
+    total_latency_ms = sum(int(a.get("latency_ms") or 0) for a in attempts if isinstance(a, dict))
     trace = {
         "runtime_task_id": task.get("id"),
         "mode": "legal_direct",
-        "provider_attempts": provider_result.get("trace") if isinstance(provider_result.get("trace"), list) else [],
+        "provider_attempts": attempts,
         "selected_provider": provider_result.get("provider"),
         "selected_model": provider_result.get("model"),
+        "provider_execution": {
+            "chain": [f'{c["provider"]}:{c["model"]}' for c in PROVIDER_CHAIN],
+            "attempts": attempts,
+            "selected_provider": provider_result.get("provider"),
+            "selected_model": provider_result.get("model"),
+            "total_latency_ms": total_latency_ms,
+            "selected": pexec.get("selected"),
+        },
         "quality_score": score,
         "fake_fallback": False,
         "completed_at": time.time(),
@@ -160,7 +172,8 @@ def run_legal_workflow_direct(task: dict) -> dict:
     """
     prompt = build_legal_prompt(task)
     task_id = str(task.get("id") or "")
-    provider_result = known_good_chat_path(prompt, task_id=task_id, total_timeout=90.0)
+    # Single unified entry point — deterministic Codex->Gemini->xAI->NVIDIA chain.
+    provider_result = run_provider_chain(prompt, task_id=task_id, total_timeout=90.0)
     trace = provider_result.get("trace") if isinstance(provider_result.get("trace"), list) else []
     if not provider_result.get("ok"):
         raise WorkflowError(str(provider_result.get("error") or "legal_provider_failed"), trace, "legal_provider_path")
@@ -320,6 +333,20 @@ def _worker_loop(queue: QueueManager, agent_index: int) -> None:
             except Exception as exc:
                 trace = getattr(exc, "trace", []) or []
                 layer = getattr(exc, "layer", "workflow")
+                now = time.time()
+                current = queue.get(task_id) or task
+                current_steps = current.get("steps") if isinstance(current.get("steps"), list) else []
+                for step in current_steps:
+                    if not isinstance(step, dict):
+                        continue
+                    if step.get("status") == "running":
+                        step["status"] = "failed"
+                        step["failed_at"] = now
+                        step["error"] = str(exc)[:500]
+                    elif step.get("status") == "pending":
+                        step["status"] = "skipped"
+                        step["skipped_at"] = now
+                        step["skip_reason"] = "prior_step_failed"
                 failure_result = {
                     "status": "failed",
                     "error": str(exc)[:1000],
@@ -329,13 +356,14 @@ def _worker_loop(queue: QueueManager, agent_index: int) -> None:
                         "failure": str(exc)[:500],
                         "failure_layer": layer,
                     },
-                    "completed_at": time.time(),
+                    "completed_at": now,
                 }
                 queue.update(
                     task_id,
                     status="failed",
+                    steps=current_steps,
                     error=str(exc)[:1000],
-                    failed_at=time.time(),
+                    failed_at=now,
                     result=failure_result,
                 )
             _touch_heartbeat(agent_id)

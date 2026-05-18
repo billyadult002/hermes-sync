@@ -215,100 +215,165 @@ def _masked_credential(value: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Primary provider path
+# Deterministic provider chain: Codex -> Gemini -> xAI -> NVIDIA
+# (server_v2 owns the cross-provider fallback decision; cliproxy is only the
+#  transport for codex/gemini/xai accounts. NOT round-robin across providers.)
 # ---------------------------------------------------------------------------
 
-def known_good_chat_path(
-    prompt: str,
-    *,
-    task_id: str = "",
-    total_timeout: float = 60.0,
-) -> dict:
-    """Try cliproxy first, fall back to hermes-bridge.
+MAX_ATTEMPTS_PER_PROVIDER = int(env_value("HERMES_MAX_ATTEMPTS_PER_PROVIDER") or "3")
 
-    Returns {"ok": True, "output": str, "provider": str, "model": str, "trace": list}
-    or       {"ok": False, "error": str, "trace": list}.
-    """
-    started_at = time.time()
-    trace: list[dict] = []
+# Models are env-overridable; defaults are real, currently-available models.
+PROVIDER_CHAIN: list[dict] = [
+    {"provider": "codex",  "model": env_value("HERMES_CHAIN_CODEX_MODEL")  or CHATGPT_TARGET_MODEL, "transport": "cliproxy"},
+    {"provider": "gemini", "model": env_value("HERMES_CHAIN_GEMINI_MODEL") or "gemini-2.5-pro",     "transport": "cliproxy"},
+    {"provider": "xai",    "model": env_value("HERMES_CHAIN_XAI_MODEL")    or "grok-4.3",            "transport": "cliproxy"},
+    {"provider": "nvidia", "model": env_value("HERMES_CHAIN_NVIDIA_MODEL") or "minimaxai/minimax-m2.7", "transport": "nvidia"},
+]
+
+_AUTH_ERROR_MARKERS = (
+    "auth_unavailable", "no auth available", "401", "unauthorized", "token expired",
+    "deauthorized", "no codex credentials", "sign in again", "invalid api key",
+    "missing api key", "authentication", "credentials stored",
+)
+_QUOTA_ERROR_MARKERS = (
+    "quota exceeded", "quota_exceeded", "rate limit", "rate_limit", "429",
+    "insufficient_quota", "resource_exhausted", "exhausted", "too many requests",
+    "usage limit", "cooling down", "all credentials", "credentials for model",
+    "limit has been reached",
+)
+_TIMEOUT_MARKERS = ("timeout", "timed out", "deadline", "readtimeout", "connecttimeout")
+
+
+def is_auth_error(message: str | None) -> bool:
+    low = str(message or "").lower()
+    return any(m in low for m in _AUTH_ERROR_MARKERS)
+
+
+def is_quota_error(message: str | None) -> bool:
+    low = str(message or "").lower()
+    return any(m in low for m in _QUOTA_ERROR_MARKERS)
+
+
+def is_timeout_error(message: str | None) -> bool:
+    low = str(message or "").lower()
+    return any(m in low for m in _TIMEOUT_MARKERS)
+
+
+def is_substantive(text: str | None) -> bool:
+    if is_low_quality(text) or is_provider_failure(text):
+        return False
+    return classify_result(text) == "success"
+
+
+def _call_provider(step: dict, prompt: str, single_timeout: float) -> dict:
+    """Exactly ONE provider attempt. Returns {ok, output, error, latency_ms}."""
+    transport = step["transport"]
+    model = step["model"]
     messages = [{"role": "user", "content": prompt}]
+    if transport == "cliproxy":
+        key = env_value("CLIPROXYAPI_API_KEY")
+        if not key:
+            return {"ok": False, "output": "", "error": "cliproxy_key_missing", "latency_ms": 0}
+        url = f"{CLIPROXY_API}/chat/completions"
+        headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
+        payload = {"model": model, "stream": True, "messages": messages, "agent": "auto"}
+    elif transport == "nvidia":
+        key = env_value("NVIDIA_API_KEY")
+        if not key:
+            return {"ok": False, "output": "", "error": "nvidia_key_missing", "latency_ms": 0}
+        base = (env_value("NVIDIA_BASE_URL") or "https://integrate.api.nvidia.com/v1").rstrip("/")
+        url = f"{base}/chat/completions"
+        headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
+        payload = {"model": model, "stream": True, "messages": messages}
+    else:
+        return {"ok": False, "output": "", "error": f"unknown_transport:{transport}", "latency_ms": 0}
 
-    # --- Path 1: cliproxy direct
-    cliproxy_key = env_value("CLIPROXYAPI_API_KEY")
-    if cliproxy_key:
-        attempt_started = time.time()
-        provider = "chatgpt"
-        model = CHATGPT_TARGET_MODEL
-        try:
-            output, reasoning = _stream_chat_completion(
-                f"{CLIPROXY_API}/chat/completions",
-                {"Authorization": f"Bearer {cliproxy_key}", "Content-Type": "application/json"},
-                {"model": model, "stream": True, "messages": messages, "agent": "auto"},
-                timeout=max(10.0, total_timeout - (time.time() - started_at)),
-            )
-            latency = int((time.time() - attempt_started) * 1000)
-            trace.append({
-                "provider": provider,
-                "model": model,
-                "auth": "cliproxy",
-                "status": "success" if not is_low_quality(output) else "low_quality",
-                "latency": latency,
-                "error": "" if not is_low_quality(output) else "empty_or_non_substantive_result",
-                "reasoning_chars": len(reasoning),
-            })
-            if not is_low_quality(output):
-                return {"ok": True, "output": output, "provider": provider, "model": model, "trace": trace}
-        except Exception as exc:
-            trace.append({
-                "provider": provider,
-                "model": model,
-                "auth": "cliproxy",
-                "status": "timeout" if "timeout" in str(exc).lower() else "failed",
-                "latency": int((time.time() - attempt_started) * 1000),
-                "error": str(exc)[:500],
-            })
+    started = time.time()
+    try:
+        output, reasoning = _stream_chat_completion(url, headers, payload, timeout=single_timeout)
+        return {
+            "ok": True, "output": output, "error": "",
+            "latency_ms": int((time.time() - started) * 1000),
+            "reasoning_chars": len(reasoning),
+        }
+    except Exception as exc:
+        return {
+            "ok": False, "output": "", "error": str(exc)[:500],
+            "latency_ms": int((time.time() - started) * 1000),
+        }
 
-    # --- Path 2: hermes bridge (up to 3 attempts)
-    remaining = max(1.0, total_timeout - (time.time() - started_at))
-    if remaining > 5:
-        bearer = api_key()
-        headers: dict[str, str] = {"Content-Type": "application/json"}
-        if bearer:
-            headers["Authorization"] = f"Bearer {bearer}"
-        for _attempt in range(min(3, MAX_PROVIDER_ATTEMPTS)):
-            if time.time() - started_at >= total_timeout:
-                break
-            attempt_started = time.time()
-            try:
-                output, reasoning = _stream_chat_completion(
-                    f"{HERMES_API}/chat/completions",
-                    headers,
-                    {"model": "hermes-agent", "stream": True, "messages": messages, "agent": "auto"},
-                    timeout=max(5.0, min(MAX_SINGLE_PROVIDER_SECONDS, total_timeout - (time.time() - started_at))),
-                )
-                latency = int((time.time() - attempt_started) * 1000)
-                trace.append({
-                    "provider": "chatgpt",
-                    "model": CHATGPT_TARGET_MODEL,
-                    "auth": "hermes-bridge",
-                    "status": "success" if not is_low_quality(output) else "low_quality",
-                    "latency": latency,
-                    "error": "" if not is_low_quality(output) else "empty_or_non_substantive_result",
-                    "reasoning_chars": len(reasoning),
-                })
-                if not is_low_quality(output):
-                    return {"ok": True, "output": output, "provider": "chatgpt", "model": CHATGPT_TARGET_MODEL, "trace": trace}
-            except Exception as exc:
-                trace.append({
-                    "provider": "chatgpt",
-                    "model": CHATGPT_TARGET_MODEL,
-                    "auth": "hermes-bridge",
-                    "status": "timeout" if "timeout" in str(exc).lower() else "failed",
-                    "latency": int((time.time() - attempt_started) * 1000),
-                    "error": str(exc)[:500],
-                })
 
-    return {"ok": False, "error": "legal_provider_failed", "trace": trace}
+def run_provider_chain(prompt: str, *, task_id: str = "", total_timeout: float = 90.0) -> dict:
+    """Deterministic Codex -> Gemini -> xAI -> NVIDIA execution.
+
+    Within each provider, attempts are serial (fill-first / cliproxy rotation
+    supplies the next account). Switch provider on auth/quota errors or two
+    consecutive empties; retry same provider on transient timeout.
+    """
+    started = time.time()
+    attempts: list[dict] = []
+    for step in PROVIDER_CHAIN:
+        provider, model = step["provider"], step["model"]
+        empty_streak = 0
+        n = 0
+        while n < MAX_ATTEMPTS_PER_PROVIDER:
+            n += 1
+            remaining = total_timeout - (time.time() - started)
+            if remaining <= 2:
+                attempts.append({"provider": provider, "model": model, "transport": step["transport"],
+                                 "attempt": n, "status": "chain_timeout", "latency_ms": 0,
+                                 "error": "provider_chain_total_timeout"})
+                return {"ok": False, "error": "provider_chain_timeout", "trace": attempts,
+                        "provider_execution": {"attempts": attempts, "selected": None}}
+            single = max(15.0, min(55.0, remaining))
+            r = _call_provider(step, prompt, single)
+            entry = {"provider": provider, "model": model, "transport": step["transport"],
+                     "attempt": n, "latency_ms": r["latency_ms"]}
+
+            if r["ok"] and is_substantive(r["output"]):
+                entry["status"] = "success"
+                attempts.append(entry)
+                return {"ok": True, "output": r["output"], "provider": provider, "model": model,
+                        "trace": attempts,
+                        "provider_execution": {"attempts": attempts,
+                                               "selected": {"provider": provider, "model": model}}}
+
+            err = r.get("error") or ("empty_or_non_substantive_result" if r["ok"] else "unknown_error")
+            entry["error"] = str(err)[:300]
+
+            if not r["ok"] and is_auth_error(err):
+                entry["status"] = "auth_error"
+                attempts.append(entry)
+                break  # switch provider immediately
+            if not r["ok"] and is_quota_error(err):
+                entry["status"] = "quota_error"
+                attempts.append(entry)
+                break  # switch provider immediately
+            if not r["ok"] and is_timeout_error(err):
+                entry["status"] = "timeout"
+                attempts.append(entry)
+                continue  # transient: retry SAME provider
+
+            # empty / low-quality / other non-auth error
+            entry["status"] = "empty" if r["ok"] else "error"
+            attempts.append(entry)
+            if r["ok"]:
+                empty_streak += 1
+                if empty_streak >= 2:
+                    break  # two consecutive empties -> switch provider
+            # otherwise retry same provider until MAX_ATTEMPTS_PER_PROVIDER
+
+    return {"ok": False, "error": "provider_chain_failed", "trace": attempts,
+            "provider_execution": {"attempts": attempts, "selected": None}}
+
+
+def known_good_chat_path(prompt: str, *, task_id: str = "", total_timeout: float = 60.0) -> dict:
+    """Deterministic provider-chain entry point (contract-compatible).
+
+    Returns {"ok": True, "output", "provider", "model", "trace"(list)}
+    or       {"ok": False, "error", "trace"(list)}.
+    """
+    return run_provider_chain(prompt, task_id=task_id, total_timeout=total_timeout)
 
 
 # ---------------------------------------------------------------------------

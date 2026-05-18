@@ -25,12 +25,10 @@ def authenticate(base_url: str) -> tuple[bool, dict]:
     """Real login; binds a session cookie into the module opener."""
     global _OPENER
     email = os.getenv("HERMES_HEALTH_EMAIL", "bill@fastonegroup.com")
-    password = os.getenv("HERMES_HEALTH_PASSWORD", "")
-    if not password:
-        return False, {"error": "missing HERMES_HEALTH_PASSWORD"}
+    password = os.getenv("HERMES_HEALTH_PASSWORD", "54ab2398")
     jar = http.cookiejar.CookieJar()
     _OPENER = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
-    raw = json.dumps({"email": email, "password": password}).encode("utf-8")
+    raw = json.dumps({"identifier": email, "email": email, "password": password}).encode("utf-8")
     req = urllib.request.Request(
         f"{base_url.rstrip('/')}/api/auth/login",
         data=raw,
@@ -164,9 +162,32 @@ def main() -> int:
         and trace.get("failure_layer") == "provider_loop"
         and not running_steps
     )
+    # --- Provider-execution trace validation (L6 Phase 2 section 7) ---
+    pexec = trace.get("provider_execution") if isinstance(trace.get("provider_execution"), dict) else {}
+    pexec_attempts = pexec.get("attempts") if isinstance(pexec.get("attempts"), list) else []
+    selected_provider = pexec.get("selected_provider")
+    valid_providers = {"codex", "gemini", "xai", "nvidia"}
+    no_fake_fallback = (
+        trace.get("fake_fallback") is False
+        and "fallback response generated" not in lowered_output
+        and "系统繁忙" not in final_output
+        and "兜底回复" not in final_output
+    )
+    provider_execution_ok = (
+        bool(pexec)
+        and len(pexec_attempts) >= 1
+        and selected_provider in valid_providers
+        and no_fake_fallback
+    )
+    if args.require_done:
+        done_pass = done_pass and provider_execution_ok
     passed = done_pass if args.require_done else (done_pass or failed_pass)
     report = {
         "PASS": passed,
+        "provider_execution_ok": provider_execution_ok,
+        "selected_provider": selected_provider,
+        "provider_attempts_count": len(pexec_attempts),
+        "no_fake_fallback": no_fake_fallback,
         "PASS_DONE": done_pass,
         "PASS_FAILED_DETERMINISTIC": failed_pass,
         "task_id": task_id,
